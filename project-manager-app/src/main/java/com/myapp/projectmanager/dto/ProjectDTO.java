@@ -1,17 +1,9 @@
-package com.myapp.projectmanager.entity;
+package com.myapp.projectmanager.dto;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,52 +13,38 @@ import org.springframework.lang.Nullable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
-@Table(name = "project")
-public class Project implements Serializable {
+public class ProjectDTO {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3373094650936392401L;
-
-	@Id
-	@GeneratedValue
-	@Column(name = "Project_ID", nullable = false)
 	private long projectId;
 
-	@NotEmpty(message = "{project.proje.invalid}")
-	@Column(name = "Project")
+	@NotEmpty(message = "{project.project.invalid}")
 	private String project;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "{task.startDate.invalid}")
-	@Column(name = "Start_Date")
+	@NotNull(message = "{project.startDate.invalid}")
+	@FutureOrPresent(message = "{project.startDate.past}")
 	private LocalDate startDate;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "{task.endDate.invalid}")
-	@Column(name = "End_Date")
+	@NotNull(message = "{project.endDate.invalid}")
+	@FutureOrPresent(message = "{project.endDate.past}")
 	private LocalDate endDate;
 
-	@NotNull(message = "{task.priority.invalid}")
-	@Min(message = "{task.priority.negativeOrZero}", value = 1)
-	@Column(name = "Priority")
+	@NotNull(message = "{project.priority.invalid}")
+	@Min(message = "{project.priority.negativeOrZero}", value = 1)
 	private int priority;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
-	private Set<Task> tasks;
+	private Set<TaskDTO> tasks;
 
 	@Nullable
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "project")
-	private User user;
+	private UserDTO user;
 
-	public Project() {
+	public ProjectDTO() {
 
 	}
 
-	public Project(long projectId, String project, LocalDate startDate, LocalDate endDate, int priority) {
+	public ProjectDTO(long projectId, String project, LocalDate startDate, LocalDate endDate, int priority) {
 		super();
 		this.projectId = projectId;
 		this.project = project;
@@ -75,11 +53,11 @@ public class Project implements Serializable {
 		this.priority = priority;
 	}
 
-	public User getUser() {
+	public UserDTO getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(UserDTO user) {
 		this.user = user;
 	}
 
@@ -123,11 +101,11 @@ public class Project implements Serializable {
 		this.priority = priority;
 	}
 
-	public Set<Task> getTasks() {
+	public Set<TaskDTO> getTasks() {
 		return tasks;
 	}
 
-	public void setTasks(Set<Task> tasks) {
+	public void setTasks(Set<TaskDTO> tasks) {
 		this.tasks = tasks;
 	}
 

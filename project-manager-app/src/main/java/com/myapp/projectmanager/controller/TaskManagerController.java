@@ -27,8 +27,8 @@ import com.myapp.projectmanager.dto.TaskDTO.UpdateTaskValidateGroup;
 import com.myapp.projectmanager.entity.ParentTask;
 import com.myapp.projectmanager.entity.Task;
 import com.myapp.projectmanager.exception.ProjectManagerServiceException;
-import com.myapp.projectmanager.mapper.TaskManagerEntityToDtoMapper;
-import com.myapp.projectmanager.service.ProjectManagerService;
+import com.myapp.projectmanager.mapper.ProjectManagerEntityToDtoMapper;
+import com.myapp.projectmanager.service.TaskManagerService;
 
 /**
  * 
@@ -41,10 +41,10 @@ public class TaskManagerController {
 	private static final Logger logger = LoggerFactory.getLogger(TaskManagerController.class);
 
 	@Autowired
-	private ProjectManagerService taskMngrService;
+	private TaskManagerService taskMngrService;
 
 	@Autowired
-	private TaskManagerEntityToDtoMapper mapper;
+	private ProjectManagerEntityToDtoMapper mapper;
 
 	@GetMapping(value = "/login")
 	public boolean login(HttpServletRequest request, HttpServletResponse response)

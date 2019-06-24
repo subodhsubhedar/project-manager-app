@@ -40,6 +40,8 @@ public class TaskDTO {
 
 	private ParentTaskDTO prntTask;
 
+	private ProjectDTO project;
+
 	@Nullable
 	private Boolean taskComplete;
 
@@ -110,6 +112,14 @@ public class TaskDTO {
 
 	public void setTaskComplete(Boolean taskComplete) {
 		this.taskComplete = taskComplete;
+	}
+
+	public ProjectDTO getProject() {
+		return project;
+	}
+
+	public void setProject(ProjectDTO project) {
+		this.project = project;
 	}
 
 	@Override

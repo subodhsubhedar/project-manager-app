@@ -18,7 +18,7 @@ public class ProjectManagerConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectManagerConfig.class);
 
-	@Bean(name = "taskManagerCorsConfigSrc")
+	@Bean(name = "projectManagerCorsConfigSrc")
 	public CorsConfigurationSource corsConfigurationSourc() {
 		logger.debug("Initializing CorsConfigurationSource");
 

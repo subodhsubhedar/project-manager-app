@@ -20,15 +20,15 @@ public class ProjectManagerSecurityConfiguration extends WebSecurityConfigurerAd
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectManagerSecurityConfiguration.class);
 
-	private static final String TASK_MNGR_ROLE= "TASK_MNGR";
-	private static final String TASK_ADMIN_ROLE= "TASK_ADMIN";
-	
+	private static final String PROJECT_MNGR_ROLE = "PROJECT_MNGR";
+	private static final String PROJECT_ADMIN_ROLE = "PROJECT_ADMIN";
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
-	private CorsConfigurationSource taskManagerCorsConfigSrc;
-	
+	private CorsConfigurationSource projectManagerCorsConfigSrc;
+
 	@Bean
 	public BasicAuthenticationEntryPoint getTaskMngrBasicAuthPoint() {
 		return new ProjectManagerBasicAuthEntryPoint();
@@ -42,30 +42,27 @@ public class ProjectManagerSecurityConfiguration extends WebSecurityConfigurerAd
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		logger.debug("Configuring AuthenticationManagerBuilder with inMemoryAuthentication params...");
-		
-		auth.inMemoryAuthentication()
-				.withUser("subodh").password(passwordEncoder.encode("subodh123")).roles(TASK_MNGR_ROLE).and()
-				.withUser("admin").password(passwordEncoder.encode("admin123"))
-				.roles(TASK_ADMIN_ROLE);
+
+		auth.inMemoryAuthentication().withUser("subodh").password(passwordEncoder.encode("subodh123"))
+				.roles(PROJECT_MNGR_ROLE).and().withUser("admin").password(passwordEncoder.encode("admin123"))
+				.roles(PROJECT_ADMIN_ROLE);
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		logger.debug("Configuring Authorization params...");
-		
-		http
-			.cors().configurationSource(taskManagerCorsConfigSrc).and()
-			.httpBasic().authenticationEntryPoint(getTaskMngrBasicAuthPoint()).realmName("TASK_MNGR_SECURITY").and()
+
+		http.cors().configurationSource(projectManagerCorsConfigSrc).and().httpBasic()
+				.authenticationEntryPoint(getTaskMngrBasicAuthPoint()).realmName("PROJECT_MNGR_SECURITY").and()
 				.authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated()
-				.and()
-				.authorizeRequests().antMatchers(HttpMethod.GET, "/tasks").hasAnyRole(TASK_MNGR_ROLE,TASK_ADMIN_ROLE).and()
-				.authorizeRequests().antMatchers(HttpMethod.GET, "/task/**").hasAnyRole(TASK_MNGR_ROLE,TASK_ADMIN_ROLE).and()
-				.authorizeRequests().antMatchers(HttpMethod.POST, "/task/add").hasAnyRole(TASK_ADMIN_ROLE).and()
-				.authorizeRequests().antMatchers(HttpMethod.PUT, "/task/update").hasAnyRole(TASK_ADMIN_ROLE).and()
-				.authorizeRequests().antMatchers(HttpMethod.DELETE, "/task/delete/**").hasAnyRole(TASK_ADMIN_ROLE).and()
-				.csrf().disable()
-				.formLogin().disable();
-				
+				.and().authorizeRequests().antMatchers(HttpMethod.GET, "/tasks")
+				.hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE).and().authorizeRequests()
+				.antMatchers(HttpMethod.GET, "/task/**").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE).and()
+				.authorizeRequests().antMatchers(HttpMethod.POST, "/task/add").hasAnyRole(PROJECT_ADMIN_ROLE).and()
+				.authorizeRequests().antMatchers(HttpMethod.PUT, "/task/update").hasAnyRole(PROJECT_ADMIN_ROLE).and()
+				.authorizeRequests().antMatchers(HttpMethod.DELETE, "/task/delete/**").hasAnyRole(PROJECT_ADMIN_ROLE)
+				.and().csrf().disable().formLogin().disable();
+
 	}
 
 }

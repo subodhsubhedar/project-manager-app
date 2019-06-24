@@ -29,7 +29,7 @@ public class ProjectManagerBasicAuthEntryPoint extends BasicAuthenticationEntryP
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		setRealmName("TASK_MNGR_SECURITY");
+		setRealmName("PROJECT_MNGR_SECURITY");
 		super.afterPropertiesSet();
 	}
 }

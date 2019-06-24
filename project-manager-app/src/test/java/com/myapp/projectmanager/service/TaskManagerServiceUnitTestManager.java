@@ -29,7 +29,7 @@ import com.myapp.projectmanager.repository.TaskManagerRepository;
 public class TaskManagerServiceUnitTestManager {
 
 	@InjectMocks
-	private ProjectManagerServiceImpl service;
+	private TaskManagerServiceImpl service;
 
 	@Mock
 	private TaskManagerRepository taskRepositoryMock;

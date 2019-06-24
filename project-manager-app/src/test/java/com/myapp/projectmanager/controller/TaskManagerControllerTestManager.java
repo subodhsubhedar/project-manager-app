@@ -3,14 +3,11 @@ package com.myapp.projectmanager.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.json.JSONException;
@@ -39,7 +36,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.myapp.projectmanager.entity.ParentTask;
 import com.myapp.projectmanager.entity.Task;
 import com.myapp.projectmanager.exception.ProjectManagerServiceException;
-import com.myapp.projectmanager.service.ProjectManagerService;
+import com.myapp.projectmanager.service.TaskManagerService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -49,7 +46,7 @@ public class TaskManagerControllerTestManager {
 	private TestRestTemplate restTemplate;
 
 	@MockBean
-	private ProjectManagerService taskMngrService;
+	private TaskManagerService taskMngrService;
 
 	private static Set<Task> taskDs;
 
