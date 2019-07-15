@@ -28,7 +28,6 @@ public class User implements Serializable {
 	@Column(name = "User_ID", nullable = false)
 	private long userId;
 
-	@Id
 	@GeneratedValue
 	@Column(name = "Employee_ID", nullable = false)
 	private long empId;
