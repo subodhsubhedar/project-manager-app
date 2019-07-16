@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.myapp.projectmanager.controller.TaskManagerControllerTestManager;
-import com.myapp.projectmanager.dao.TaskManagerDaoIntegrationTestManager;
+import com.myapp.projectmanager.repository.TaskManagerDaoIntegrationTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceIntegrationTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceUnitTestManager;
 

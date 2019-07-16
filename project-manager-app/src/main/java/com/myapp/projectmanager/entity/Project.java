@@ -55,11 +55,11 @@ public class Project implements Serializable {
 	private int priority;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "project")
 	private Set<Task> tasks;
 
 	@Nullable
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "project")
+	@OneToOne(mappedBy = "project")
 	private User user;
 
 	public Project() {
