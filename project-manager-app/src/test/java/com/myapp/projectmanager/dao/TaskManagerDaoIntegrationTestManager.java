@@ -5,31 +5,45 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.TestContextManager;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
+import com.myapp.ProjectManagerAppApplication;
 import com.myapp.projectmanager.entity.ParentTask;
 import com.myapp.projectmanager.entity.Project;
 import com.myapp.projectmanager.entity.Task;
+import com.myapp.projectmanager.entity.User;
 import com.myapp.projectmanager.repository.ParentTaskManagerRepository;
 import com.myapp.projectmanager.repository.TaskManagerRepository;
 
 @RunWith(Parameterized.class)
 //@RunWith(SpringRunner.class)
 @DataJpaTest(showSql = true)
+@ContextConfiguration(classes = ProjectManagerAppApplication.class)
 public class TaskManagerDaoIntegrationTestManager {
 
-	private TestContextManager testContextManager;
+	@ClassRule
+	public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
+	@Rule
+	public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
 	@Autowired
 	private TestEntityManager entityMngr;
@@ -40,25 +54,41 @@ public class TaskManagerDaoIntegrationTestManager {
 	@Autowired
 	private ParentTaskManagerRepository parentTaskManagerRepository;
 
+	public List<Task> taskDs1;
+
+	public List<ParentTask> parentTaskDs1;
+
+	public Project prj;
+
+	public List<User> usrList;
+	
 	@Parameter(value = 0)
-	public static List<Task> taskDs1;
+	public static List<Task> taskDs1new;
 
 	@Parameter(value = 1)
-	public static List<ParentTask> parentTaskDs1;
+	public static List<ParentTask> parentTaskDs1new;
 
 	@Parameter(value = 2)
-	public static Project prj;
+	public static Project prjnew;
+
+	@Parameter(value = 3)
+	public static List<User> usrListnew;
 
 	@Parameters
 	public static Collection<Object[]> data() {
 		Collection<Object[]> params = new ArrayList<>();
 
-		Project prj1 = new Project(0L, "Project - Mobile Subscription management system", LocalDate.now(),
-				LocalDate.now().plusYears(1), 25);
+	
+		params.add(new Object[] { null, null, null, null});
+		// params.add(new Object[] { taskDs2, parentTaskDs2, prj2 });
 
-		Project prj2 = new Project(1L, "Project - Home loan Processing System", LocalDate.now(),
-				LocalDate.now().plusYears(2), 30);
+		return params;
+	}
 
+	@Before
+	public void setUp() throws Exception {
+
+		
 		parentTaskDs1 = new ArrayList<ParentTask>();
 		ParentTask p1 = new ParentTask(0L, "Use Case - New Connection", null);
 		parentTaskDs1.add(p1);
@@ -69,91 +99,132 @@ public class TaskManagerDaoIntegrationTestManager {
 		ParentTask p4 = new ParentTask(8L, "Use Case - Check for payments", null);
 		parentTaskDs1.add(p4);
 
+		p1 = entityMngr.persist(p1);
+		p2 = entityMngr.persist(p2);
+		p3 = entityMngr.persist(p3);
+		p4 = entityMngr.persist(p4);
+
+		//entityMngr.flush();
+		
+
+
+		Project prj1 = new Project(0L, "Project - Mobile Subscription management system", LocalDate.now(),
+				LocalDate.now().plusYears(1), 25);
+
+		Project prj2 = new Project(0L, "Project - Home loan Processing System", LocalDate.now(),
+				LocalDate.now().plusYears(2), 30);
+
+		
+		prj1 = entityMngr.persist(prj1);
+		prj2 = entityMngr.persist(prj2);
+		
+		prj = prj1;
+		
 		taskDs1 = new ArrayList<Task>();
 
 		// ############ For project Mobile Subscription management system ############
 
 		// Tasks with parent as Use Case - New Connection
-		Task t01 = new Task(1L, "Use case -	Receive new connection application", LocalDate.now(),
+		Task t01 = new Task(0L, "Use case -	Receive new connection application", LocalDate.now(),
 				LocalDate.now().plusDays(15), 20, p1, prj1, false);
 		taskDs1.add(t01);
 
-		Task t02 = new Task(2L, "Use case -	Subscriber KYC", LocalDate.now(), LocalDate.now().plusDays(45), 21, p1,
+		Task t02 = new Task(0L, "Use case -	Subscriber KYC", LocalDate.now(), LocalDate.now().plusDays(45), 21, p1,
 				prj1, false);
 		taskDs1.add(t02);
 
-		Task t03 = new Task(3L, "Use case -  Provide options for Postpaid or Prepaid", LocalDate.now(),
+		Task t03 = new Task(0L, "Use case -  Provide options for Postpaid or Prepaid", LocalDate.now(),
 				LocalDate.now().plusDays(20), 20, p1, prj1, false);
 		taskDs1.add(t03);
 
-		Task t04 = new Task(4L, "Use case -  Allocate mobile number", LocalDate.now(), LocalDate.now().plusDays(12), 15,
+		Task t04 = new Task(0L, "Use case -  Allocate mobile number", LocalDate.now(), LocalDate.now().plusDays(12), 15,
 				p1, prj1, false);
 		taskDs1.add(t04);
 
-		Task t05 = new Task(5L, "Use case -  Activate sim card", LocalDate.now(), LocalDate.now().plusDays(8), 20, p1,
+		Task t05 = new Task(0L, "Use case -  Activate sim card", LocalDate.now(), LocalDate.now().plusDays(8), 20, p1,
 				prj1, false);
 		taskDs1.add(t05);
 
-		Task t06 = new Task(6L, "Use case -  Activate billing cycle", LocalDate.now(), LocalDate.now().plusDays(12), 22,
+		Task t06 = new Task(0L, "Use case -  Activate billing cycle", LocalDate.now(), LocalDate.now().plusDays(12), 22,
 				p1, prj1, false);
 		taskDs1.add(t06);
 
-		Task t07 = new Task(7L, "Use case -  Generate monthly bill", LocalDate.now(), LocalDate.now().plusDays(25), 25,
+		Task t07 = new Task(0L, "Use case -  Generate monthly bill", LocalDate.now(), LocalDate.now().plusDays(25), 25,
 				p1, prj1, false);
 		taskDs1.add(t07);
 
-		Task t08 = new Task(8L, "Use case -  Check for payments", LocalDate.now(), LocalDate.now().plusDays(18), 25, p1,
+		Task t08 = new Task(0L, "Use case -  Check for payments", LocalDate.now(), LocalDate.now().plusDays(18), 25, p1,
 				prj1, false);
 		taskDs1.add(t08);
 
 		// Tasks with parent as Use Case - Check for payments
-		Task t09 = new Task(9L, "Use case -  Send reminders", LocalDate.now(), LocalDate.now().plusDays(18), 25, p4,
+		Task t09 = new Task(0L, "Use case -  Send reminders", LocalDate.now(), LocalDate.now().plusDays(18), 25, p4,
 				prj1, false);
 		taskDs1.add(t09);
 
 		// Tasks with parent as Use case - Provide options for Postpaid or Prepaid
-		Task t10 = new Task(10L, "Use case -  Provide various Postpaid data plans", LocalDate.now(),
+		Task t10 = new Task(0L, "Use case -  Provide various Postpaid data plans", LocalDate.now(),
 				LocalDate.now().plusDays(150), 25, p3, prj1, false);
 		taskDs1.add(t10);
 
-		Task t11 = new Task(11L, "Use case -  Provide various Postpaid call plans", LocalDate.now(),
+		Task t11 = new Task(0L, "Use case -  Provide various Postpaid call plans", LocalDate.now(),
 				LocalDate.now().plusDays(120), 25, p3, prj1, false);
 		taskDs1.add(t11);
 
-		Task t12 = new Task(12L, "Use case -  Provide various Prepaid data plans", LocalDate.now(),
+		Task t12 = new Task(0L, "Use case -  Provide various Prepaid data plans", LocalDate.now(),
 				LocalDate.now().plusDays(170), 25, p3, prj1, false);
 		taskDs1.add(t12);
 
-		Task t13 = new Task(13L, "Use case -  Provide various Prepaid call plans", LocalDate.now(),
+		Task t13 = new Task(0L, "Use case -  Provide various Prepaid call plans", LocalDate.now(),
 				LocalDate.now().plusDays(130), 25, p3, prj1, false);
 		taskDs1.add(t13);
 
 		// Tasks with No parent
-		Task t14 = new Task(14L, "Use Case - Suspend Connection", LocalDate.now(), LocalDate.now().plusDays(20), 30,
+		Task t14 = new Task(0L, "Use Case - Suspend Connection", LocalDate.now(), LocalDate.now().plusDays(20), 30,
 				null, prj1, false);
 		taskDs1.add(t14);
 
 		// Tasks with parent as Use Case - Subscriber KYC
-		Task t15 = new Task(15L, "Use case - Check for any criminal records", LocalDate.now(),
+		Task t15 = new Task(0L, "Use case - Check for any criminal records", LocalDate.now(),
 				LocalDate.now().plusDays(60), 25, p2, prj1, false);
 		taskDs1.add(t15);
 
-		Task t16 = new Task(16L, "Use case - Check for Nationality, dual citizenship etc.", LocalDate.now(),
+		Task t16 = new Task(0L, "Use case - Check for Nationality, dual citizenship etc.", LocalDate.now(),
 				LocalDate.now().plusDays(60), 25, p2, prj1, false);
 		taskDs1.add(t16);
 
-		Task t17 = new Task(17L, "Use case - Check for ID Proofs", LocalDate.now(), LocalDate.now().plusDays(30), 25,
-				p2, prj1, false);
+		Task t17 = new Task(0L, "Use case - Check for ID Proofs", LocalDate.now(), LocalDate.now().plusDays(30), 25, p2,
+				prj1, false);
 		taskDs1.add(t17);
 
-		Task t18 = new Task(18L, "Use case - Check for Address Proofs", LocalDate.now(), LocalDate.now().plusDays(40),
+		Task t18 = new Task(0L, "Use case - Check for Address Proofs", LocalDate.now(), LocalDate.now().plusDays(40),
 				25, p2, prj1, false);
 		taskDs1.add(t18);
 
-		Task t19 = new Task(18L, "Use case - Check for Aadhar card", LocalDate.now(), LocalDate.now().plusDays(20), 25,
+		Task t19 = new Task(0L, "Use case - Check for Aadhar card", LocalDate.now(), LocalDate.now().plusDays(20), 25,
 				p2, prj1, false);
 		taskDs1.add(t19);
-
+		
+		t01 = entityMngr.persist(t01);
+		t02 = entityMngr.persist(t02);
+		t03 = entityMngr.persist(t03);
+		t04 = entityMngr.persist(t04);
+		t05 = entityMngr.persist(t05);
+		t06 = entityMngr.persist(t06);
+		t07 = entityMngr.persist(t07);
+		t08 = entityMngr.persist(t08);
+		t09 = entityMngr.persist(t09);
+		t10 = entityMngr.persist(t10);
+		t11 = entityMngr.persist(t11);
+		t12 = entityMngr.persist(t12);
+		t13 = entityMngr.persist(t13);
+		t14 = entityMngr.persist(t14);
+		t15 = entityMngr.persist(t15);
+		t16 = entityMngr.persist(t16);
+		t17 = entityMngr.persist(t17);
+		t18 = entityMngr.persist(t18);
+		t19 = entityMngr.persist(t19);
+		
 		p1.addSubTasks(t01);
 		p1.addSubTasks(t02);
 		p1.addSubTasks(t03);
@@ -176,60 +247,69 @@ public class TaskManagerDaoIntegrationTestManager {
 
 		p4.addSubTasks(t09);
 
-		params.add(new Object[] { taskDs1, parentTaskDs1, prj1 });
-		// params.add(new Object[] { taskDs2, parentTaskDs2, prj2 });
+		prj1.setTasks(new HashSet<>(taskDs1));
 
-		return params;
-	}
+		User usr10 = new User(0L, 0L, "Subodh", "Subhedar", prj1, null);
+		User usr11 = new User(0L, 0L, "Vinay", "Roy", null, t01);
+		User usr12 = new User(0L, 0L, "David", "Ray", null, t02);
+		User usr13 = new User(0L, 0L, "Ryan", "Jacobs", null, t03);
+		User usr14 = new User(0L, 0L, "Nick", "Wells", null, t04);
 
-	@Before
-	public void setUp() throws Exception {
+		
+		usr10 = entityMngr.persist(usr10);
+		usr11 = entityMngr.persist(usr11);
+		usr12 = entityMngr.persist(usr12);
+		usr13 = entityMngr.persist(usr13);
+		usr14 = entityMngr.persist(usr14);
+		
+		usrList = new ArrayList<User>();
+		usrList.add(usr10);
+		usrList.add(usr11);
+		usrList.add(usr12);
+		usrList.add(usr13);
+		usrList.add(usr14);
 
-		this.testContextManager = new TestContextManager(getClass());
-		this.testContextManager.prepareTestInstance(this);
-
-		parentTaskDs1.forEach(prntTsk -> entityMngr.persist(prntTsk));
+		prj1.setUser(usr10);
+		t01.setUser(usr11);
+		t02.setUser(usr12);
+		t03.setUser(usr13);
+		t04.setUser(usr14);
+		
 		entityMngr.flush();
-
-		taskDs1.forEach(tsk -> entityMngr.persist(tsk));
-
-		entityMngr.persist(prj);
-		entityMngr.flush();
+		
+		
+		
 	}
 
 	@Test
 	public void testFindAllTasks_shouldReturnCorrectCount() {
-
-		System.out.println("#################################");
-
-		System.out.println(this.taskDs1);
-		System.out.println("#################################");
-
-		System.out.println(this.parentTaskDs1);
-		System.out.println("#################################");
-
 		assertTrue(Integer.valueOf(taskDs1.size()).equals(taskManagerRepository.findAll().size()));
 	}
 
+	@Test
+	public void testFindAllParentTasks_shouldReturnCorrectCount() {
+		assertTrue(Integer.valueOf(parentTaskDs1.size()).equals(parentTaskManagerRepository.findAll().size()));
+	}
+
+	@Test
+	public void testFindTaskByDesc_shouldReturnCorrectDesc() {
+		assertTrue(taskDs1.get(4).getTask()
+				.equals(taskManagerRepository.findByTask(taskDs1.get(4).getTask()).get().getTask()));
+	}
+
+	@Test
+	public void testFindParentTaskById_shouldReturnCorrectTitle() {
+		assertTrue(parentTaskDs1.get(0).getParentTaskDesc()
+				.equals(parentTaskManagerRepository.findById(0L).get().getParentTaskDesc()));
+	}
+
+	@Test
+	public void testFindTaskByDesc_shouldReturnCorrectPriority() {
+		assertTrue(Integer.valueOf(taskDs1.get(6).getPriority())
+				.equals(taskManagerRepository.findByTask(taskDs1.get(6).getTask()).get().getPriority()));
+	}
+
 	/*
-	 * @Test public void testFindAllParentTasks_shouldReturnCorrectCount() {
-	 * assertTrue(Integer.valueOf(3).equals(parentTaskManagerRepository.findAll().
-	 * size())); }
-	 * 
-	 * @Test public void testFindTaskByDesc_shouldReturnCorrectDesc() {
-	 * 
-	 * assertTrue("Check Politically Exposed Person"
-	 * .equals(taskManagerRepository.findByTask("Check Politically Exposed Person").
-	 * get().getTask())); }
-	 * 
-	 * @Test public void testFindParentTaskById_shouldReturnCorrectTitle() {
-	 * assertTrue("Home Loan Processing".equals(parentTaskManagerRepository.findById
-	 * (1L).get().getParentTaskDesc())); }
-	 * 
-	 * @Test public void testFindTaskByDesc_shouldReturnCorrectPriority() {
-	 * assertTrue( Integer.valueOf(29).equals(taskManagerRepository.
-	 * findByTask("Close Loan account").get().getPriority())); }
-	 * 
 	 * @Test public void testFindTaskByDesc_shouldReturnCorrectParentTask() {
 	 * assertTrue("Home Loan Closure".equals(
 	 * taskManagerRepository.findByTask("Close Loan account").get().getParentTask().
@@ -247,8 +327,6 @@ public class TaskManagerDaoIntegrationTestManager {
 	 * assertTrue(LocalDate.of(2019, 12, 30)
 	 * .equals(taskManagerRepository.findByTask("Close Loan account").get().
 	 * getEndDate())); }
-	 * 
-	 * /*
 	 * 
 	 * @Test
 	 * 
@@ -281,7 +359,7 @@ public class TaskManagerDaoIntegrationTestManager {
 	 * 
 	 * assertTrue("Home Loan Closure".equals((taskManagerRepository.save(t14)).
 	 * getParentTask().getParentTaskDesc())); }
-	 *
+	 * 
 	 * @Test
 	 * 
 	 * @DirtiesContext public void testDeleteTask_shouldDelete() {

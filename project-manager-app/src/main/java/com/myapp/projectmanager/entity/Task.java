@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -59,19 +60,21 @@ public class Task implements Serializable {
 
 	@Nullable
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn
+	@JoinColumn(name="Project_ID")
 	private Project project;
-	
+
 	@Nullable
 	@Column(name = "Is_Complete")
 	private Boolean taskComplete;
 
+	@Nullable
+	@OneToOne(mappedBy = "task")
+	private User user;
 
 	public Task() {
 
 	}
 
-	
 	public Task(long taskId, @NotEmpty(message = "{task.task.invalid}") String task,
 			@NotNull(message = "{task.startDate.invalid}") LocalDate startDate,
 			@NotNull(message = "{task.endDate.invalid}") LocalDate endDate,
@@ -87,7 +90,6 @@ public class Task implements Serializable {
 		this.project = project;
 		this.taskComplete = taskComplete;
 	}
-
 
 	public ParentTask getPrntTask() {
 		return prntTask;
@@ -159,6 +161,14 @@ public class Task implements Serializable {
 
 	public void setTaskComplete(Boolean taskComplete) {
 		this.taskComplete = taskComplete;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override

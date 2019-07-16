@@ -41,7 +41,7 @@ public class User implements Serializable {
 	private String lastName;
 
 	@Nullable
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne
 	@JoinColumn(name = "Project_ID")
 	private Project project;
 
