@@ -112,10 +112,28 @@ public class UserServiceImplTest {
 		usrUpdated.setFirstName("Updated firstname");
 		usrUpdated.setLastName("Updated lastname");
 
+		usrUpdated.setProject(prj);
+
 		when(userRepository.save(usrDs.get(1))).thenReturn((usrUpdated));
 
 		assertTrue("Updated firstname".equals(service.updateUser(usrDs.get(1)).getFirstName()));
 		assertTrue("Updated lastname".equals(service.updateUser(usrDs.get(1)).getLastName()));
+	}
+
+	@Test(expected = ProjectManagerServiceException.class)
+	public void testUpdateUser_throwEx() throws ProjectManagerServiceException {
+
+		when(userRepository.findById(usrDs.get(1).getUserId())).thenReturn(Optional.of(usrDs.get(1)));
+
+		User usrUpdated = usrDs.get(1);
+		usrUpdated.setFirstName("Updated firstname");
+		usrUpdated.setLastName("Updated lastname");
+
+		usrUpdated.setProject(prj);
+
+		when(userRepository.save(usrDs.get(1))).thenThrow(new RuntimeException("testUpdateUser_throwEx"));
+
+		service.updateUser(usrDs.get(1));
 	}
 
 	@Test
@@ -147,7 +165,7 @@ public class UserServiceImplTest {
 		service.deleteUserById((usrDs.get(3).getUserId()));
 
 		verify(userRepository).delete(usrDs.get(3));
-	} 
+	}
 
 	@Test(expected = ProjectManagerServiceException.class)
 	public void testDeleteInvalidUsr_shouldThrowEx() throws ProjectManagerServiceException {
