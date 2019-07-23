@@ -9,12 +9,12 @@ public interface ProjectManagerService {
 
 	Set<Project> findAllProjects() throws ProjectManagerServiceException;
 
-	Project createUser(Project project) throws ProjectManagerServiceException;
+	Project createProject(Project project) throws ProjectManagerServiceException;
 
-	Project updateUser(Project project) throws ProjectManagerServiceException;
+	Project updateProject(Project project) throws ProjectManagerServiceException;
 
-	Project getUserById(Long projectId) throws ProjectManagerServiceException;
+	Project getProjectById(Long projectId) throws ProjectManagerServiceException;
 
-	void deletePojectById(Long projectId) throws ProjectManagerServiceException;
+	void deleteProjectById(Long projectId) throws ProjectManagerServiceException;
 
 }
