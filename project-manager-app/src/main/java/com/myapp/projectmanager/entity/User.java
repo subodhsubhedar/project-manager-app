@@ -14,6 +14,8 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.lang.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
@@ -40,11 +42,13 @@ public class User implements Serializable {
 	@Column(name = "Last_Name")
 	private String lastName;
 
+	@JsonIgnore
 	@Nullable
 	@OneToOne
 	@JoinColumn(name = "Project_ID")
 	private Project project;
 
+	@JsonIgnore
 	@Nullable
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "Task_ID")

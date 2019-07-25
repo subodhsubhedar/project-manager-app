@@ -42,6 +42,8 @@ public class TaskDTO {
 
 	private ProjectDTO project;
 
+	private UserDTO user;
+
 	@Nullable
 	private Boolean taskComplete;
 
@@ -120,6 +122,14 @@ public class TaskDTO {
 
 	public void setProject(ProjectDTO project) {
 		this.project = project;
+	}
+
+	public UserDTO getUser() {
+		return user;
+	}
+
+	public void setUser(UserDTO user) {
+		this.user = user;
 	}
 
 	@Override

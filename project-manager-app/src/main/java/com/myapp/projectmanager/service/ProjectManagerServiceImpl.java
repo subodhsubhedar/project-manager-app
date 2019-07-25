@@ -7,11 +7,13 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.myapp.projectmanager.entity.Project;
 import com.myapp.projectmanager.exception.ProjectManagerServiceException;
 import com.myapp.projectmanager.repository.ProjectManagerRepository;
 
+@Service
 public class ProjectManagerServiceImpl implements ProjectManagerService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectManagerServiceImpl.class);

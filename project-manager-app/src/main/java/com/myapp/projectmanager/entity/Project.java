@@ -58,6 +58,7 @@ public class Project implements Serializable {
 	@OneToMany(mappedBy = "project")
 	private Set<Task> tasks;
 
+	@JsonIgnore
 	@Nullable
 	@OneToOne(mappedBy = "project")
 	private User user;

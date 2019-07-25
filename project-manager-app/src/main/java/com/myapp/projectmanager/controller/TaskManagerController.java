@@ -1,11 +1,7 @@
 package com.myapp.projectmanager.controller;
 
-import java.io.IOException;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -45,17 +41,6 @@ public class TaskManagerController {
 
 	@Autowired
 	private ProjectManagerEntityToDtoMapper mapper;
-
-	@GetMapping(value = "/login")
-	public boolean login(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-
-		logger.debug("Login request receieved, auth header :{}", request.getHeaders("Authorization"));
-		boolean result = request.authenticate(response);
-		logger.debug("Authentication result :{} ", result);
-
-		return result;
-	}
 
 	@GetMapping(value = "/tasks")
 	public Set<TaskDTO> listAllTasks() throws ProjectManagerServiceException {

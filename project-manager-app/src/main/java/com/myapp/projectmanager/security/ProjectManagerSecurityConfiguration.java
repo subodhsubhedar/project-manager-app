@@ -53,15 +53,44 @@ public class ProjectManagerSecurityConfiguration extends WebSecurityConfigurerAd
 		logger.debug("Configuring Authorization params...");
 
 		http.cors().configurationSource(projectManagerCorsConfigSrc).and().httpBasic()
-				.authenticationEntryPoint(getTaskMngrBasicAuthPoint()).realmName("PROJECT_MNGR_SECURITY").and()
-				.authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated()
-				.and().authorizeRequests().antMatchers(HttpMethod.GET, "/tasks")
-				.hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE).and().authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/task/**").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE).and()
-				.authorizeRequests().antMatchers(HttpMethod.POST, "/task/add").hasAnyRole(PROJECT_ADMIN_ROLE).and()
-				.authorizeRequests().antMatchers(HttpMethod.PUT, "/task/update").hasAnyRole(PROJECT_ADMIN_ROLE).and()
-				.authorizeRequests().antMatchers(HttpMethod.DELETE, "/task/delete/**").hasAnyRole(PROJECT_ADMIN_ROLE)
-				.and().csrf().disable().formLogin().disable();
+				.authenticationEntryPoint(getTaskMngrBasicAuthPoint()).realmName("PROJECT_MNGR_SECURITY")
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated()
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.GET, "/tasks").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.GET, "/task/**").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.POST, "/task/add").hasAnyRole(PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.PUT, "/task/update").hasAnyRole(PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.DELETE, "/task/delete/**").hasAnyRole(PROJECT_ADMIN_ROLE)
+
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.GET, "/users").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.GET, "/user/**").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.POST, "/user/add").hasAnyRole(PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.PUT, "/user/update").hasAnyRole(PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.DELETE, "/user/delete/**").hasAnyRole(PROJECT_ADMIN_ROLE)
+					
+					.and()
+					.authorizeRequests().antMatchers(HttpMethod.GET, "/projects").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.GET, "/project/**").hasAnyRole(PROJECT_MNGR_ROLE, PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.POST, "/project/add").hasAnyRole(PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.PUT, "/project/update").hasAnyRole(PROJECT_ADMIN_ROLE)
+				.and()
+					.authorizeRequests().antMatchers(HttpMethod.DELETE, "/project/delete/**").hasAnyRole(PROJECT_ADMIN_ROLE)
+					
+				.and()
+					.csrf().disable().formLogin().disable();
 
 	}
 
