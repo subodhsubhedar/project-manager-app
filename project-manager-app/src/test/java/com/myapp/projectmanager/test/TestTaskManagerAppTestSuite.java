@@ -10,13 +10,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.myapp.projectmanager.controller.TaskManagerControllerTestManager;
+import com.myapp.projectmanager.controller.UserManagerControllerTestManager;
+import com.myapp.projectmanager.repository.ProjectManagerDaoIntegrationTestManager;
 import com.myapp.projectmanager.repository.TaskManagerDaoIntegrationTestManager;
+import com.myapp.projectmanager.repository.UserManagerDaoIntegrationTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceIntegrationTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceUnitTestManager;
+import com.myapp.projectmanager.service.UserServiceImplTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TaskManagerControllerTestManager.class, TaskManagerDaoIntegrationTestManager.class,
-		TaskManagerServiceIntegrationTestManager.class, TaskManagerServiceUnitTestManager.class })
+@SuiteClasses({ TaskManagerControllerTestManager.class, 
+		TaskManagerDaoIntegrationTestManager.class,
+		TaskManagerServiceIntegrationTestManager.class, 
+		TaskManagerServiceUnitTestManager.class,
+		UserManagerControllerTestManager.class,
+		UserServiceImplTest.class,
+		UserManagerDaoIntegrationTestManager.class,
+		ProjectManagerDaoIntegrationTestManager.class
+})
 
 public class TestTaskManagerAppTestSuite {
 
