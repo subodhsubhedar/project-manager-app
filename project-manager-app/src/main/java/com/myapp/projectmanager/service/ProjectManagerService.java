@@ -17,4 +17,5 @@ public interface ProjectManagerService {
 
 	void deleteProjectById(Long projectId) throws ProjectManagerServiceException;
 
+	Project getProject(String projectDesc) throws ProjectManagerServiceException;
 }

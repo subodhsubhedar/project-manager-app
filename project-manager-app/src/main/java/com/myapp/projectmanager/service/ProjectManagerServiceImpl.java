@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.myapp.projectmanager.entity.Project;
 import com.myapp.projectmanager.exception.ProjectManagerServiceException;
@@ -123,6 +124,30 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
 					("Exception occured while deleting project with id :" + projectId + " -- " + e.getMessage()), e);
 		}
 
+	}
+
+	@Override
+	@Transactional
+	public Project getProject(String projectDesc) throws ProjectManagerServiceException {
+		logger.debug("Calling repository for getProject projectDesc {}", projectDesc);
+		Project project = null;
+		try {
+
+			Optional<Project> optional = repository.findByProject(projectDesc);
+
+			if (optional.isPresent()) {
+				project = optional.get();
+			} else {
+				logger.debug("Project Not found {}", projectDesc);
+				throw new ProjectManagerServiceException("Project Not found with desc :" + projectDesc);
+			}
+			return project;
+		} catch (Exception e) {
+			logger.error("ProjectManagerServiceException e {}", e);
+			throw new ProjectManagerServiceException(
+					("Exception occured while retrieving project with desc" + projectDesc + " -- " + e.getMessage()),
+					e);
+		}
 	}
 
 }

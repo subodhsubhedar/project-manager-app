@@ -9,11 +9,13 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.myapp.projectmanager.controller.ProjectManagerControllerTestManager;
 import com.myapp.projectmanager.controller.TaskManagerControllerTestManager;
 import com.myapp.projectmanager.controller.UserManagerControllerTestManager;
 import com.myapp.projectmanager.repository.ProjectManagerDaoIntegrationTestManager;
 import com.myapp.projectmanager.repository.TaskManagerDaoIntegrationTestManager;
 import com.myapp.projectmanager.repository.UserManagerDaoIntegrationTestManager;
+import com.myapp.projectmanager.service.ProjectManagerServiceUnitTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceIntegrationTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceUnitTestManager;
 import com.myapp.projectmanager.service.UserServiceImplTest;
@@ -26,15 +28,17 @@ import com.myapp.projectmanager.service.UserServiceImplTest;
 		UserManagerControllerTestManager.class,
 		UserServiceImplTest.class,
 		UserManagerDaoIntegrationTestManager.class,
-		ProjectManagerDaoIntegrationTestManager.class
+		ProjectManagerDaoIntegrationTestManager.class,
+		ProjectManagerServiceUnitTestManager.class,
+		ProjectManagerControllerTestManager.class
 })
 
-public class TestTaskManagerAppTestSuite {
+public class TestProjectManagerAppTestSuite {
 
-	private static final Logger logger = LoggerFactory.getLogger(TestTaskManagerAppTestSuite.class);
+	private static final Logger logger = LoggerFactory.getLogger(TestProjectManagerAppTestSuite.class);
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(TestTaskManagerAppTestSuite.class);
+		Result result = JUnitCore.runClasses(TestProjectManagerAppTestSuite.class);
 		int i = 1;
 
 		for (Failure failure : result.getFailures()) {
