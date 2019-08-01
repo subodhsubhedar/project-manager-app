@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -16,11 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -50,19 +47,6 @@ public class ProjectManagerCustomExceptionHandler extends ResponseEntityExceptio
 		return new ResponseEntity<>(errRespObj, headers, status);
 	}
 
-	@ExceptionHandler(value = ConstraintViolationException.class)
-	public ResponseEntity<Object> handleConstraintViolationException(HttpServletResponse response, HttpHeaders headers,
-			Exception ex, HttpStatus status) throws IOException {
-		mylogger.error("handleConstraintViolationException", ex);
-
-		ProjectManagerErrorResponse errRespObj = buildErrorResponse(ex, status);
-
-		mylogger.error("handleMethodArgumentNotValid errRespObj {}", errRespObj);
-
-		return new ResponseEntity<>(errRespObj, headers, status);
-
-	}
-
 	private ProjectManagerErrorResponse buildErrorResponse(Exception ex, HttpStatus status) {
 
 		ProjectManagerErrorResponse errRespObj = new ProjectManagerErrorResponse();
@@ -74,30 +58,6 @@ public class ProjectManagerCustomExceptionHandler extends ResponseEntityExceptio
 		 */
 		errRespObj.setDetailedException(ex.getMessage());
 		return errRespObj;
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-		mylogger.error("handleMissingPathVariable", ex);
-		ProjectManagerErrorResponse errRespObj = buildErrorResponse(ex, status);
-
-		errRespObj
-				.setErrors(Arrays.asList("errors", "Missing path variable : " + ex.getParameter().getParameterName()));
-
-		mylogger.error("handleMissingPathVariable errRespObj {}", errRespObj);
-		return new ResponseEntity<>(errRespObj, headers, status);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-		mylogger.error("handleNoHandlerFoundException", ex);
-
-		ProjectManagerErrorResponse errRespObj = buildErrorResponse(ex, status);
-
-		mylogger.error("handleNoHandlerFoundException errRespObj {}", errRespObj);
-		return new ResponseEntity<>(errRespObj, headers, status);
 	}
 
 	@Override

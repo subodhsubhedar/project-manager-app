@@ -15,6 +15,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -37,9 +41,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -69,6 +71,12 @@ public class UserManagerControllerTestManager {
 	@MockBean
 	private UserService userService;
 
+	@MockBean
+	private HttpServletRequest request;
+	
+	@MockBean
+	private HttpServletResponse response;
+	
 	@Autowired
 	private ProjectManagerEntityToDtoMapper mapper;
 
@@ -107,6 +115,39 @@ public class UserManagerControllerTestManager {
 		return restTemplate.withBasicAuth("subodh", "subodh123");
 	}
 
+	@Test
+	public void testLogin_shouldBeSuccessful()
+			throws ProjectManagerServiceException, JSONException, IOException, ServletException {
+		
+		when(request.authenticate(response)).thenReturn(true);
+
+		ResponseEntity<String> response = getRestTemplateBasicAuth().getForEntity("/login", String.class);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+	
+	@Test
+	public void testLogin_shouldFail()
+			throws ProjectManagerServiceException, JSONException, IOException, ServletException {
+		
+		when(request.authenticate(response)).thenReturn(false);
+
+		ResponseEntity<String> response = getRestTemplateBasicAuth().getForEntity("/login", String.class);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+	
+	@Test
+	public void testLogin_shouldUnAuthorize()
+			throws ProjectManagerServiceException, JSONException, IOException, ServletException {
+		
+		when(request.authenticate(response)).thenReturn(false);
+
+		ResponseEntity<String> response = restTemplate.withBasicAuth("abc", "abc").getForEntity("/login", String.class);
+
+		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+	}
+	
 	@Test
 	public void testGetAllUsers_shouldReturnAllUsersCorrectly()
 			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
@@ -254,6 +295,10 @@ public class UserManagerControllerTestManager {
 
 	}
 
+	
+	
+	
+	
 	protected String mapToJson(Object obj) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -263,21 +308,6 @@ public class UserManagerControllerTestManager {
 		return objectMapper.writeValueAsString(obj);
 	}
 
-	protected <T> T mapFromJson(String json, Class<T> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(json, clazz);
-	}
-
-	/**
-	 * 
-	 * @param userDto
-	 * @return
-	 */
-	private User getMappedEntity(UserDTO userDto) {
-		return mapper.getMappedUserEntity(userDto);
-	}
 
 	/**
 	 * 

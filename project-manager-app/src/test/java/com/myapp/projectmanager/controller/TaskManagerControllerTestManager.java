@@ -3,11 +3,13 @@ package com.myapp.projectmanager.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -177,29 +179,29 @@ public class TaskManagerControllerTestManager {
 		verify(taskMngrService, times(1)).getTaskById(2L);
 	}
 
-	/*
-	 * @Test public void testPostTask_shouldCreateNewTask() throws
-	 * ProjectManagerServiceException, JsonProcessingException, JSONException {
-	 * 
-	 * Task t = new Task(15L, "Perform enhanced due diligence", LocalDate.now(),
-	 * LocalDate.of(2019, 9, 30), 1, null, false);
-	 * 
-	 * when(taskMngrService.createTask(any(Task.class))).thenReturn(t);
-	 * 
-	 * String expected = mapToJson(t);
-	 * 
-	 * ResponseEntity<String> response =
-	 * getRestTemplateBasicAuth().postForEntity("/task/add", t, String.class);
-	 * 
-	 * assertEquals(HttpStatus.OK, response.getStatusCode());
-	 * JSONAssert.assertEquals(expected, response.getBody(), false);
-	 * 
-	 * verify(taskMngrService, times(1)).createTask(any(Task.class));
-	 * 
-	 * }
-	 */
+	@Test
+	public void testPostTask_shouldCreateNewTask()
+			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
 
-	// @Test
+		ParentTask p = new ParentTask(0L, "Use Case - New Connection", null);
+
+		Task t01 = new Task(0L, "Use case -	New use case", LocalDate.now(), LocalDate.now().plusDays(15), 20, p, prj,
+				false);
+
+		when(taskMngrService.createTask(any(Task.class))).thenReturn(t01);
+
+		String expected = mapToJson(getMappedDto(t01));
+
+		ResponseEntity<String> response = getRestTemplateBasicAuth().postForEntity("/task/add", t01, String.class);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+
+		verify(taskMngrService, times(1)).createTask(any(Task.class));
+
+	}
+
+	@Test
 	public void testPostTaskNullReqBody_shouldReturnUnsuppMediaType()
 			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
 
@@ -209,33 +211,32 @@ public class TaskManagerControllerTestManager {
 
 	}
 
-	/*
-	 * @Test public void testPutTask_shouldUpdateTask() throws
-	 * ProjectManagerServiceException, JsonProcessingException, JSONException {
-	 * 
-	 * Task t = new Task(7L, "Check Loan eligibility- updated", LocalDate.now(),
-	 * LocalDate.of(2019, 07, 30), 20, parentTaskDs.stream().findFirst().get(),
-	 * false);
-	 * 
-	 * when(taskMngrService.updateTask(any(Task.class))).thenReturn(t);
-	 * 
-	 * HttpHeaders headers = new HttpHeaders();
-	 * headers.setContentType(MediaType.APPLICATION_JSON); HttpEntity<String> entity
-	 * = new HttpEntity<>(mapToJson(t), headers);
-	 * 
-	 * ResponseEntity<String> response =
-	 * getRestTemplateBasicAuth().exchange("/task/update", HttpMethod.PUT, entity,
-	 * String.class);
-	 * 
-	 * String expected = mapToJson(t);
-	 * 
-	 * assertEquals(HttpStatus.OK, response.getStatusCode());
-	 * JSONAssert.assertEquals(expected, response.getBody(), false);
-	 * 
-	 * verify(taskMngrService, times(1)).updateTask(any(Task.class));
-	 * 
-	 * }
-	 */
+	@Test
+	public void testPutTask_shouldUpdateTask()
+			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
+
+		ParentTask p = new ParentTask(0L, "Use Case - Test New Connection", null);
+
+		Task t = new Task(0L, "Use case -	Updated use case", LocalDate.now(), LocalDate.now().plusDays(15), 20, p,
+				prj, false);
+
+		when(taskMngrService.updateTask(any(Task.class))).thenReturn(t);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(mapToJson(t), headers);
+
+		ResponseEntity<String> response = getRestTemplateBasicAuth().exchange("/task/update", HttpMethod.PUT, entity,
+				String.class);
+
+		String expected = mapToJson(getMappedDto(t));
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		JSONAssert.assertEquals(expected, response.getBody(), false);
+
+		verify(taskMngrService, times(1)).updateTask(any(Task.class));
+
+	}
 
 	@Test
 	public void testDeleteTaskById_shouldDeleteTaskCorrectly()

@@ -8,12 +8,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.validation.ConstraintViolationException;
 
 import org.json.JSONException;
 import org.junit.ClassRule;
@@ -36,10 +37,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -257,6 +257,59 @@ public class ProjectManagerControllerTestManager {
 
 	}
 
+	@Test
+	public void testPutProj_shouldThrowException() throws ProjectManagerServiceException, JsonProcessingException {
+
+		Project prj1 = new Project(0L, null, null, null, -1);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(mapToJson(getMappedDto(prj1)), headers);
+
+		ResponseEntity<String> response = getRestTemplateBasicAuth().exchange("/project/update", HttpMethod.PUT, entity,
+				String.class);
+
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+	}
+
+	@Test
+	public void testPutProj_shouldThrowConstraintException()
+			throws ProjectManagerServiceException, JsonProcessingException {
+		Project prj1 = new Project(0L, null, null,
+				null,-1);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(mapToJson(getMappedDto(prj1)), headers);
+
+		ResponseEntity<String> response = getRestTemplateBasicAuth().exchange("/project/update", HttpMethod.PUT, entity,
+				String.class);
+
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+	} 
+	
+	
+	@Test
+	public void testGetProjectById_shouldReturnNotFound()
+			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
+
+		ResponseEntity<String> response = getRestTemplateBasicAuth().getForEntity("/project/", String.class);
+
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}	
+	
+	@Test
+	public void testGetProjectById_shouldReturnNoHandlerFound()
+			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
+
+		
+		ResponseEntity<String> response = getRestTemplateBasicAuth().getForEntity("/projectaa/2", String.class);
+
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
 	protected String mapToJson(Object obj) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -264,22 +317,6 @@ public class ProjectManagerControllerTestManager {
 		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
 		return objectMapper.writeValueAsString(obj);
-	}
-
-	protected <T> T mapFromJson(String json, Class<T> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(json, clazz);
-	}
-
-	/**
-	 * 
-	 * @param userDto
-	 * @return
-	 */
-	private Project getMappedEntity(ProjectDTO projectDto) {
-		return mapper.getMappedProjectEntity(projectDto);
 	}
 
 	/**
