@@ -40,15 +40,15 @@ public class TaskDTO {
 
 	private ParentTaskDTO prntTask;
 
-	private ProjectDTO project;
-
 	private UserDTO user;
 
 	@Nullable
 	private Boolean taskComplete;
 
 	public TaskDTO() {
-
+		this.startDate = LocalDate.now();
+		this.endDate = LocalDate.now();
+		this.priority = 1;
 	}
 
 	public TaskDTO(String task, LocalDate startDate, LocalDate endDate, int priority, ParentTaskDTO parentTask) {
@@ -114,14 +114,6 @@ public class TaskDTO {
 
 	public void setTaskComplete(Boolean taskComplete) {
 		this.taskComplete = taskComplete;
-	}
-
-	public ProjectDTO getProject() {
-		return project;
-	}
-
-	public void setProject(ProjectDTO project) {
-		this.project = project;
 	}
 
 	public UserDTO getUser() {

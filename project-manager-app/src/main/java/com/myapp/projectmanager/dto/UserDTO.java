@@ -2,8 +2,6 @@ package com.myapp.projectmanager.dto;
 
 import javax.validation.constraints.NotEmpty;
 
-import org.springframework.lang.Nullable;
-
 public class UserDTO {
 
 	private long userId;
@@ -16,12 +14,6 @@ public class UserDTO {
 	@NotEmpty(message = "{user.lastName.invalid}")
 	private String lastName;
 
-	@Nullable
-	private ProjectDTO project;
-
-	@Nullable
-	private TaskDTO task;
-
 	public UserDTO() {
 
 	}
@@ -33,8 +25,6 @@ public class UserDTO {
 		this.empId = empId;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.project = project;
-		this.task = task;
 	}
 
 	public long getUserId() {
@@ -67,22 +57,6 @@ public class UserDTO {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public ProjectDTO getProject() {
-		return project;
-	}
-
-	public void setProject(ProjectDTO project) {
-		this.project = project;
-	}
-
-	public TaskDTO getTask() {
-		return task;
-	}
-
-	public void setTask(TaskDTO task) {
-		this.task = task;
 	}
 
 }

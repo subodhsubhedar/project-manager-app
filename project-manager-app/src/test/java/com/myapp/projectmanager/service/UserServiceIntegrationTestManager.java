@@ -32,7 +32,7 @@ import com.myapp.projectmanager.utils.TestUtils;
 
 @RunWith(Parameterized.class)
 @SpringBootTest
-public class UserServiceImplTest {
+public class UserServiceIntegrationTestManager {
 
 	@ClassRule
 	public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();

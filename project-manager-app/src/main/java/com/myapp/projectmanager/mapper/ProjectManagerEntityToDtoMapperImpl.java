@@ -48,15 +48,10 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 			target.setParentTask(trgt);
 		}
 
-		if (taskEntity.getProject() != null) {
-			ProjectDTO trgt = getMappedProjectDto(taskEntity.getProject());
-			target.setProject(trgt);
-		}
-
-		/*if (taskEntity.getUser() != null) {
+		if (taskEntity.getUser() != null) {
 			UserDTO trgt = getMappedUserDto(taskEntity.getUser());
 			target.setUser(trgt);
-		}*/
+		}
 
 		return target;
 	}
@@ -74,15 +69,10 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 				target.setParentTask(trgt);
 			}
 
-			if (source.getProject() != null) {
-				ProjectDTO trgt = getMappedProjectDto(source.getProject());
-				target.setProject(trgt);
-			}
-
-		/*	if (source.getUser() != null) {
+			if (source.getUser() != null) {
 				UserDTO trgt = getMappedUserDto(source.getUser());
 				target.setUser(trgt);
-			}*/
+			}
 
 			taskDtoSetTarget.add(target);
 
@@ -104,15 +94,10 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 				target.setParentTask(trgt);
 			}
 
-			if (source.getProject() != null) {
-				Project trgt = getMappedProjectEntity(source.getProject());
-				target.setProject(trgt);
-			}
-
-			/*if (source.getUser() != null) {
+			if (source.getUser() != null) {
 				User trgt = getMappedUserEntity(source.getUser());
 				target.setUser(trgt);
-			}*/
+			}
 			
 			taskEntitySetTarget.add(target);
 		}
@@ -154,16 +139,6 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 		User target = new User();
 		BeanUtils.copyProperties(userDto, target);
 
-		if (userDto.getProject() != null) {
-			Project trgt = getMappedProjectEntity(userDto.getProject());
-			target.setProject(trgt);
-		}
-
-		if (userDto.getTask() != null) {
-			Task trgt = getMappedTaskEntity(userDto.getTask());
-			target.setTask(trgt);
-		}
-
 		return target;
 	}
 
@@ -171,15 +146,6 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 	public UserDTO getMappedUserDto(User userEntity) {
 		UserDTO target = new UserDTO();
 		BeanUtils.copyProperties(userEntity, target);
-
-		if (userEntity.getProject() != null) {
-			ProjectDTO trgt = getMappedProjectDto(userEntity.getProject());
-			target.setProject(trgt);
-		}
-		if (userEntity.getTask() != null) {
-			TaskDTO trgt = getMappedTaskDto(userEntity.getTask());
-			target.setTask(trgt);
-		}
 
 		return target;
 	}
@@ -192,15 +158,6 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 			UserDTO target = new UserDTO();
 			BeanUtils.copyProperties(source, target);
 
-			if (source.getProject() != null) {
-				ProjectDTO trgt = getMappedProjectDto(source.getProject());
-				target.setProject(trgt);
-			}
-			if (source.getTask() != null) {
-				TaskDTO trgt = getMappedTaskDto(source.getTask());
-				target.setTask(trgt);
-			}
-
 			userDtoSetTarget.add(target);
 		}
 		return userDtoSetTarget;
@@ -211,7 +168,7 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 		Project target = new Project();
 		BeanUtils.copyProperties(projectDto, target);
 
-	/*	if (projectDto.getUser() != null) {
+		if (projectDto.getUser() != null) {
 			User trgt = getMappedUserEntity(projectDto.getUser());
 			target.setUser(trgt);
 		}
@@ -219,7 +176,7 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 		if (projectDto.getTasks() != null) {
 			Set<Task> taskEntitySet = getMappedTaskEntitySet(projectDto.getTasks());
 			target.setTasks(taskEntitySet);
-		}*/
+		}
 
 		return target;
 	}
@@ -229,15 +186,15 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 		ProjectDTO target = new ProjectDTO();
 		BeanUtils.copyProperties(projectEntity, target);
 
-		/*if (projectEntity.getUser() != null) {
+		if (projectEntity.getUser() != null) {
 			UserDTO trgt = getMappedUserDto(projectEntity.getUser());
 			target.setUser(trgt);
-		}*/
+		}
 
-		/*if (projectEntity.getTasks() != null) {
+		if (projectEntity.getTasks() != null) {
 			Set<TaskDTO> taskDtoSet = getMappedTaskDtoSet(projectEntity.getTasks());
 			target.setTasks(taskDtoSet);
-		}*/
+		}
 
 		return target;
 	}
@@ -250,14 +207,14 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 			ProjectDTO target = new ProjectDTO();
 			BeanUtils.copyProperties(source, target);
 
-		/*	if (source.getUser() != null) {
+			if (source.getUser() != null) {
 				UserDTO trgt = getMappedUserDto(source.getUser());
 				target.setUser(trgt);
 			}
 			if (source.getTasks() != null) {
 				Set<TaskDTO> trgt = getMappedTaskDtoSet(source.getTasks());
 				target.setTasks(trgt);
-			}*/
+			}
 
 			projectDtoSetTarget.add(target);
 		}

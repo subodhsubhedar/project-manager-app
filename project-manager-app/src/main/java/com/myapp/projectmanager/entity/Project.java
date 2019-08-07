@@ -40,12 +40,12 @@ public class Project implements Serializable {
 	private String project;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "{task.startDate.invalid}")
+	@Nullable
 	@Column(name = "Start_Date")
 	private LocalDate startDate;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "{task.endDate.invalid}")
+	@Nullable
 	@Column(name = "End_Date")
 	private LocalDate endDate;
 

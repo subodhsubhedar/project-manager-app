@@ -21,12 +21,12 @@ public class ProjectDTO {
 	private String project;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "{project.startDate.invalid}")
+	@Nullable
 	@FutureOrPresent(message = "{project.startDate.past}")
 	private LocalDate startDate;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@NotNull(message = "{project.endDate.invalid}")
+	@Nullable
 	@FutureOrPresent(message = "{project.endDate.past}")
 	private LocalDate endDate;
 
@@ -41,7 +41,9 @@ public class ProjectDTO {
 	private UserDTO user;
 
 	public ProjectDTO() {
-
+		this.startDate = LocalDate.now();
+		this.endDate = LocalDate.now();
+		this.priority = 1;
 	}
 
 	public ProjectDTO(long projectId, String project, LocalDate startDate, LocalDate endDate, int priority) {

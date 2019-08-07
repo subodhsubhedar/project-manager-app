@@ -18,19 +18,23 @@ import com.myapp.projectmanager.repository.UserManagerDaoIntegrationTestManager;
 import com.myapp.projectmanager.service.ProjectManagerServiceUnitTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceIntegrationTestManager;
 import com.myapp.projectmanager.service.TaskManagerServiceUnitTestManager;
-import com.myapp.projectmanager.service.UserServiceImplTest;
+import com.myapp.projectmanager.service.UserServiceIntegrationTestManager;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TaskManagerControllerTestManager.class, 
-		TaskManagerDaoIntegrationTestManager.class,
-		TaskManagerServiceIntegrationTestManager.class, 
-		TaskManagerServiceUnitTestManager.class,
-		UserManagerControllerTestManager.class,
-		UserServiceImplTest.class,
-		UserManagerDaoIntegrationTestManager.class,
-		ProjectManagerDaoIntegrationTestManager.class,
-		ProjectManagerServiceUnitTestManager.class,
-		ProjectManagerControllerTestManager.class
+@SuiteClasses({ 
+	
+	ProjectManagerControllerTestManager.class,
+	TaskManagerControllerTestManager.class,
+	UserManagerControllerTestManager.class,
+	
+	ProjectManagerDaoIntegrationTestManager.class,
+	TaskManagerDaoIntegrationTestManager.class,
+	UserManagerDaoIntegrationTestManager.class,
+	
+	ProjectManagerServiceUnitTestManager.class,
+	TaskManagerServiceIntegrationTestManager.class,
+	TaskManagerServiceUnitTestManager.class,
+	UserServiceIntegrationTestManager.class
 })
 
 public class TestProjectManagerAppTestSuite {

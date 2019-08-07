@@ -1,40 +1,239 @@
 node ('master') {
 
-	def mvnHome = tool 'Maven-3.6.0'
+
+catchError(buildResult: 'FAILURE', message: 'Error in pipeline', stageResult: 'FAILURE'){ 
+
+
+//SEND EMAIL
+def emailBody = '${DEFAULT_CONTENT}'
+def emailSubject = '${DEFAULT_SUBJECT}'
+def AUTHOR_NAME =''
+def LAST_COMMIT_DTLS = ''
+def build_trigger = ''
+def build_trigger_user = ''
+
+	try{
+
+			timeout(15) {
+	 
+				stage('Checkout') {
+				   echo 'Checkout'
+				   checkout([$class: 'GitSCM', 
+				   branches: [[name: '*/master']], 
+				   doGenerateSubmoduleConfigurations: false,
+				   extensions: [], submoduleCfg: [], 
+				   userRemoteConfigs: 
+				   [[url: 'https://github.com/subodhsubhedar/project-manager-app.git']]])
+
+					AUTHOR_NAME = bat (
+					      //script: "git show -s --format='%%an' HEAD",
+					      
+					      script: "git log -n 1 origin/master",
+					      returnStdout: true
+					  )
+					  .split('\r\n')[2].trim()
+					
+					echo "Last commit by ${AUTHOR_NAME}."
+					echo "${currentBuild.buildCauses.shortDescription}"
+					echo "${currentBuild.buildCauses.userName}"
+					
+					build_trigger = currentBuild.buildCauses.shortDescription
+					
+					build_trigger_user = currentBuild.buildCauses.userName
+					
+					LAST_COMMIT_DTLS =  "Last commit by : ${AUTHOR_NAME}." 
+				}
+		    	    	
+		    		dir('project-manager-app') {
+				
+						withMaven(maven: 'Maven-3.6.0') {
+		
+					        stage('Build - Test'){
+					            echo '###################### STAGE : Build ##########################'
+					            bat 'mvn clean install -DrunSuite=**/*Suite.class -DskipTests=false -Djacoco.skip=false -Dmaven.jacoco.skip=false'
+					        }
+
+					      
+					        
+			
+					        stage('Quality Gate') {
+					    		echo '###################### STAGE : Quality Gate ##########################'			            
+				       				
+				       			withSonarQubeEnv('sonar') {
+									bat 'mvn sonar:sonar -DskipTests=true'
+								}
+		
+		
+								timeout(5) {						
+									def maxRetry = 200
+									def i = 0;
+									waitUntil {
+											  sleep 5
+									          echo 'retrying..'
+									          def qg =  waitForQualityGate()
+									        
+									          if (qg.status != 'OK') {
+									          		i++;
+													echo qg.status
+													echo 'Sonar quality gate status still not recieved as Ok'
+													
+										          	if (qg.status == 'ERROR') {
+														error 'Sonar quality gate status is ERROR'
+													}			
+													if(i == maxRetry){
+														error 'Sonar quality gate status, max retry count reached'
+													}
+												false
+		                					} else if(qg.status == 'OK'){
+												echo 'Sonar quality gate status Receieved Success ... Exiting loop'
+												true
+											} 
+									    
+									}
+								}	
+					        }
+					     
+					        stage('Publish') {
+					    		echo '###################### STAGE : Publish ##########################'	
+
+								bat 'mvn site'	
+								
+					             publishHTML([allowMissing: false, 
+					            	alwaysLinkToLastBuild: false, 
+					            	keepAll: false, 
+					            	reportDir: 'target/site/jacoco/', 
+					            	reportFiles: 'index.html', 
+					            	reportName: 'Code Coverage (Jacoco)', 
+					            	reportTitles: ''])
+
+					             publishHTML([allowMissing: false, 
+					            	alwaysLinkToLastBuild: false, 
+					            	keepAll: false, 
+					            	reportDir: 'target/site/', 
+					            	reportFiles: 'index.html', 
+					            	reportName: 'Maven Project site', 
+					            	reportTitles: ''])
+
+					         
+					        }
+					        stage('Archive') {
+					    		echo '###################### STAGE : Archive ##########################'						
+					            archiveArtifacts '/target/*.jar'
+					        }
+					        			     
+
+					        stage('DEV-INT') {
+					    		echo '###################### STAGE : DEV ##########################'			    
+								//Placeholder for deploying to DEV INTEGRATION server
+					        }							
+
+					        stage('QA') {
+					    		echo '###################### STAGE : QA ##########################'			    
+								//Await manual input confirmation								
+								//Placeholder for deploying to QA server
+					        }							
+											 
+
+							stage('Release') {
+					    		echo '###################### STAGE : Deploy ##########################'			    
+								
+								//Strip the snapshot part of the version
+								//Build the codebase, make changes in the configured SCM (Git in our case)
+								//Increment the version and add append -SNAPSHOT
+								//Deploy the artifacts to the provided server 
+								
+					        }
+							
+					        stage('Staging') {
+					    		echo '###################### STAGE : Stage ##########################'			    
+								//Placeholder for deploying to staging server
+								//Await manual input confirmation
+
+								def userInput = true
+								def didTimeout = false
+								try {
+									timeout(time: 10, unit: 'SECONDS') { 
+										
+										input id: 'Deploy_staging', message: 'Do yo approve Staging deployment ?', ok: 'Approve', submitter: 'it-ops'
+										
+									}
+								} catch(err) { 
+										didTimeout = true
+										userInput = false
+										echo "Aborted due to error"
+										echo err.getMessage()
+								}
+								
+						
+							    if (didTimeout) {
+							        // do something on timeout
+							        echo "no input was received before timeout"
+							    } else if (userInput == true) {
+							        // do something
+							        currentBuild.result = 'SUCCESS'
+							        echo "this was successful"
+							    } else {
+							        // do something else
+							        echo "this was ABORTED"
+							        currentBuild.result = 'SUCCESS'
+							    } 
+								
+					        }
+
+							
+					        stage('Deploy @PROD - Go Live !') {
+
+					    		echo '###################### STAGE : Deploy @PROD - Go Live ##########################'			    
+								//Placeholder for deploying to PROD server
+								//Await manual input confirmation
+					        }
+					    
+					    }  
+			    	}
+					
+					
+				}
+
+				
+	}catch(err){
+		echo "Inside catch block - Error in pipeline"
+		echo err.getMessage()
+
 	
-	    timeout(1) {
-     
-    		dir('project-manager-app/project-manager-app') {
-	    
-		        stage('Checkout') {
-		           echo 'Checkout'
-		           git branch: 'master', url: 'https://github.com/subodhsubhedar/project-manager-app.git'
-		        }
-		    
-		        stage('Build') 
-		         	maven : 'Maven'	 
-		            echo 'Build'
-		            bat 'mvn clean compile'
-		        }
-		        
-		        stage('Test') {
-		            echo 'Test'
-		            bat 'mvn test'
-		        }
-		     
-		        stage('Package') {
-		            echo 'Package'
-		            bat 'mvn package'
-		        }
-		     
-		        stage('Deploy') {
-		    
-		            echo 'Deploy'
-		        }
-		    
-		        stage('Archive') {
-		                echo 'Archive'
-		            archiveArtifacts '/target/*.jar'
-		        }
-	    	}
-}   
+		currentBuild.result = 'FAILURE'
+		echo "RESULT: ${currentBuild.result}"
+
+        echo "Sending email..."		
+        
+        echo "${currentBuild.buildCauses.shortDescription}"
+		echo "${currentBuild.buildCauses.userName}"
+        
+        emailBody = "<b>Triggered By : <br>"+ build_trigger + "<br>" +build_trigger_user+ "<br>" +LAST_COMMIT_DTLS +"</b>"  +"<br><br>" + "<b> Error Details : "+err.getMessage()+"</b><br><br>"+ emailBody
+
+		emailext(mimeType: 'text/html', replyTo: 'user@gmail.com', subject: emailSubject, to: 'user@gmail.com', body: emailBody)
+		
+		// rethrow again to be handled by global handler
+		error "Error in Pipeline."
+		
+	}
+	
+	echo "Pipeline Completed Successfully"
+
+	echo "RESULT: ${currentBuild.result}"
+
+    echo "Sending success confirmation email..."		 
+
+    echo "${currentBuild.buildCauses.shortDescription}"
+	echo "${currentBuild.buildCauses.userName}"
+        
+    emailBody = "<b>Triggered By : <br>"+ build_trigger + "<br>" +build_trigger_user+ "<br>"+LAST_COMMIT_DTLS +"</b>"  +"<br><br>"+ emailBody
+
+	//SEND EMAIL
+	emailext(mimeType: 'text/html', replyTo: 'user@gmail.com', subject: emailSubject, to: 'user@gmail.com', body: emailBody)
+	
+	}	
+
+}
+	
+
+
