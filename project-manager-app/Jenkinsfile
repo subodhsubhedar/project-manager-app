@@ -1,6 +1,6 @@
 node ('master') {
- 	set M2_HOME=C:\Users\subodh\Programs\apache-maven-3.6.0-bin\apache-maven-3.6.0
-	set path=C:\Users\subodh\Programs\apache-maven-3.6.0-bin\apache-maven-3.6.0\bin:%path%;
+ 	
+	def mvnHome = tool 'Maven-3.6.0'
 	
 	    timeout(1) {
      
