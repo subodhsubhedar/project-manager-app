@@ -1,7 +1,9 @@
 node ('master') {
-
+ 	tools {
+        maven 'Maven'
+    }
 	    timeout(1) {
-    
+     
     		dir('project-manager-app/project-manager-app') {
 	    
 		        stage('Checkout') {
@@ -10,7 +12,7 @@ node ('master') {
 		        }
 		    
 		        stage('Build') 
-		         	maven : 'Maven'	
+		         	maven : 'Maven'	 
 		            echo 'Build'
 		            bat 'mvn clean compile'
 		        }
