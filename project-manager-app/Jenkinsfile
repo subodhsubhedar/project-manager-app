@@ -1,4 +1,4 @@
-node ('master') { 
+node ('master') {
 
 	    timeout(1) {
     
@@ -10,6 +10,7 @@ node ('master') {
 		        }
 		    
 		        stage('Build') 
+		         	maven : 'Maven'	
 		            echo 'Build'
 		            bat 'mvn clean compile'
 		        }
@@ -35,5 +36,3 @@ node ('master') {
 		        }
 	    	}
 }   
-
-
