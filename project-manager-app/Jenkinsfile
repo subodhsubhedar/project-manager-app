@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node ('master') {
 
 	    timeout(1) {
@@ -35,3 +36,46 @@ node ('master') {
 		        }
 	    	}
 }   
+=======
+pipeline{
+	agent any
+	
+	node ('master') {
+
+	    timeout(1) {
+    
+    		dir('project-manager-app/project-manager-app') {
+	    
+		        stage('Checkout') {
+		           echo 'Checkout'
+		           git branch: 'master', url: 'https://github.com/subodhsubhedar/project-manager-app.git'
+		        }
+		    
+		        stage('Build') 
+		            echo 'Build'
+		            bat 'mvn clean compile'
+		        }
+		        
+		        stage('Test') {
+		            echo 'Test'
+		            bat 'mvn test'
+		        }
+		     
+		        stage('Package') {
+		            echo 'Package'
+		            bat 'mvn package'
+		        }
+		     
+		        stage('Deploy') {
+		    
+		            echo 'Deploy'
+		        }
+		    
+		        stage('Archive') {
+		                echo 'Archive'
+		            archiveArtifacts '/target/*.jar'
+		        }
+	    	}
+		}   
+}
+>>>>>>> branch 'master' of https://github.com/subodhsubhedar/project-manager-app.git
