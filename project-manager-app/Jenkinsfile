@@ -1,7 +1,7 @@
 node ('master') {
- 	tools {
-        maven 'Maven'
-    }
+ 	set M2_HOME=C:\Users\subodh\Programs\apache-maven-3.6.0-bin\apache-maven-3.6.0
+	set path=C:\Users\subodh\Programs\apache-maven-3.6.0-bin\apache-maven-3.6.0\bin:%path%;
+	
 	    timeout(1) {
      
     		dir('project-manager-app/project-manager-app') {
