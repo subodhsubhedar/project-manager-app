@@ -23,8 +23,7 @@ public class TestUtils {
 
 		// ############ For project Mobile Subscription management system ############
 		prepareTestDataItr1(params);
-		
-		
+
 		// ############ For project Home Loan Application management system ############
 		prepareTestDataItr2(params);
 
@@ -33,7 +32,8 @@ public class TestUtils {
 
 	/**
 	 * 
-	 * // ############ Test data For project Mobile Subscription management system ############
+	 * // ############ Test data For project Mobile Subscription management system
+	 * ############
 	 * 
 	 * @param params
 	 */
@@ -156,26 +156,32 @@ public class TestUtils {
 
 		p3.addSubTasks(t10);
 		p3.addSubTasks(t11);
-		p3.addSubTasks(t12);
+		p3.addSubTasks(t12); 
 		p3.addSubTasks(t13);
 
 		p4.addSubTasks(t09);
 
 		prj1.setTasks(new HashSet<>(taskDs1));
 
-		User usr10 = new User(0L, 0L, "Subodh", "Subhedar", prj1, null);
-		User usr11 = new User(0L, 0L, "Vinay", "Roy", null, t01);
-		User usr12 = new User(0L, 0L, "David", "Ray", null, t02);
-		User usr13 = new User(0L, 0L, "Ryan", "Jacobs", null, t03);
-		User usr14 = new User(0L, 0L, "Nick", "Wells", null, t04);
-
+		User usr10 = new User(0L, 0L, "Subodh", "Subhedar", prj1);
+		User usr11 = new User(0L, 0L, "Vinay", "Roy", null);
+		usr11.addTasks(t01);
+		User usr12 = new User(0L, 0L, "David", "Ray", null);
+		usr12.addTasks(t02);
+		User usr13 = new User(0L, 0L, "Ryan", "Jacobs", null);
+		usr13.addTasks(t03);
+		User usr14 = new User(0L, 0L, "Nick", "Wells", null);
+		usr14.addTasks(t04);
+		User usr15 = new User(0L, 0L, "Rick", "Nelson", null);
+		
 		List<User> usrDs1 = new ArrayList<User>();
 		usrDs1.add(usr10);
 		usrDs1.add(usr11);
 		usrDs1.add(usr12);
 		usrDs1.add(usr13);
 		usrDs1.add(usr14);
-
+		usrDs1.add(usr15);
+		
 		prj1.setUser(usr10);
 		t01.setUser(usr11);
 		t02.setUser(usr12);
@@ -186,10 +192,10 @@ public class TestUtils {
 
 	}
 
-	
 	/**
 	 * 
-	 * // ############ Test data For project Mobile Subscription management system ############
+	 * // ############ Test data For project Mobile Subscription management system
+	 * ############
 	 * 
 	 * @param params
 	 */
@@ -213,41 +219,40 @@ public class TestUtils {
 		List<Task> taskDs1 = new ArrayList<Task>();
 
 		// Tasks with parent as Use Case - Home Loan Processing
-		Task t01 = new Task(0L, "Use case - Receive Loan Application", LocalDate.now(),
-				LocalDate.now().plusDays(60), 26, p1, prj1, false);
+		Task t01 = new Task(0L, "Use case - Receive Loan Application", LocalDate.now(), LocalDate.now().plusDays(60),
+				26, p1, prj1, false);
 		taskDs1.add(t01);
 
-		Task t02 = new Task(0L, "Use case - Procure Customer Documents", LocalDate.now(), LocalDate.now().plusDays(45), 21, p1,
-				prj1, false);
+		Task t02 = new Task(0L, "Use case - Procure Customer Documents", LocalDate.now(), LocalDate.now().plusDays(45),
+				21, p1, prj1, false);
 		taskDs1.add(t02);
 
 		Task t03 = new Task(0L, "Use case - Procure Property Details and Documents", LocalDate.now(),
 				LocalDate.now().plusDays(20), 20, p1, prj1, false);
 		taskDs1.add(t03);
 
-		Task t04 = new Task(0L, "Use case - KYC", LocalDate.now(), LocalDate.now().plusDays(12), 15,
-				p1, prj1, false);
+		Task t04 = new Task(0L, "Use case - KYC", LocalDate.now(), LocalDate.now().plusDays(12), 15, p1, prj1, false);
 		taskDs1.add(t04);
 
-		Task t05 = new Task(0L, "Use case - Check Loan eligibility", LocalDate.now(), LocalDate.now().plusDays(8), 20, p1,
-				prj1, false);
+		Task t05 = new Task(0L, "Use case - Check Loan eligibility", LocalDate.now(), LocalDate.now().plusDays(8), 20,
+				p1, prj1, false);
 		taskDs1.add(t05);
 
-		Task t06 = new Task(0L, "Use case - Issue loan pre approval letter", LocalDate.now(), LocalDate.now().plusDays(12), 22,
-				p1, prj1, false);
+		Task t06 = new Task(0L, "Use case - Issue loan pre approval letter", LocalDate.now(),
+				LocalDate.now().plusDays(12), 22, p1, prj1, false);
 		taskDs1.add(t06);
 
-		Task t07 = new Task(0L, "Use case - Approve/Reject Loan application", LocalDate.now(), LocalDate.now().plusDays(25), 25,
-				p1, prj1, false);
+		Task t07 = new Task(0L, "Use case - Approve/Reject Loan application", LocalDate.now(),
+				LocalDate.now().plusDays(25), 25, p1, prj1, false);
 		taskDs1.add(t07);
 
-		Task t08 = new Task(0L, "Use case - Generate loan account number", LocalDate.now(), LocalDate.now().plusDays(18), 25, p1,
-				prj1, false);
+		Task t08 = new Task(0L, "Use case - Generate loan account number", LocalDate.now(),
+				LocalDate.now().plusDays(18), 25, p1, prj1, false);
 		taskDs1.add(t08);
 
 		// Tasks with parent as Use Case - KYC
-		Task t09 = new Task(0L, "Use case - Check criminal records", LocalDate.now(), LocalDate.now().plusDays(18), 25, p2,
-				prj1, false);
+		Task t09 = new Task(0L, "Use case - Check criminal records", LocalDate.now(), LocalDate.now().plusDays(18), 25,
+				p2, prj1, false);
 		taskDs1.add(t09);
 
 		// Tasks with parent as Use Case - Home Loan Closure
@@ -255,16 +260,16 @@ public class TestUtils {
 				LocalDate.now().plusDays(150), 25, p3, prj1, false);
 		taskDs1.add(t10);
 
-		Task t11 = new Task(0L, "Use case - Check outstanding balance", LocalDate.now(),
-				LocalDate.now().plusDays(120), 25, p3, prj1, false);
+		Task t11 = new Task(0L, "Use case - Check outstanding balance", LocalDate.now(), LocalDate.now().plusDays(120),
+				25, p3, prj1, false);
 		taskDs1.add(t11);
 
-		Task t12 = new Task(0L, "Use case - Settle payments", LocalDate.now(),
-				LocalDate.now().plusDays(170), 25, p3, prj1, false);
+		Task t12 = new Task(0L, "Use case - Settle payments", LocalDate.now(), LocalDate.now().plusDays(170), 25, p3,
+				prj1, false);
 		taskDs1.add(t12);
 
-		Task t13 = new Task(0L, "Use case - Close Loan account", LocalDate.now(),
-				LocalDate.now().plusDays(130), 25, p3, prj1, false);
+		Task t13 = new Task(0L, "Use case - Close Loan account", LocalDate.now(), LocalDate.now().plusDays(130), 25, p3,
+				prj1, false);
 		taskDs1.add(t13);
 
 		p1.addSubTasks(t01);
@@ -283,14 +288,22 @@ public class TestUtils {
 		p3.addSubTasks(t12);
 		p3.addSubTasks(t13);
 
-
 		prj1.setTasks(new HashSet<>(taskDs1));
 
-		User usr10 = new User(0L, 0L, "Kim", "Carrie", prj1, null);
-		User usr11 = new User(0L, 0L, "Vinay", "Jae", null, t04);
-		User usr12 = new User(0L, 0L, "David", "Malcom", null, t05);
-		User usr13 = new User(0L, 0L, "Ryan", "Wells", null, t07);
-		User usr14 = new User(0L, 0L, "Nick", "Flemington", null, t08);
+		User usr10 = new User(0L, 0L, "Kim", "Carrie", prj1);
+		User usr11 = new User(0L, 0L, "Vinay", "Jae", null);
+		usr11.addTasks(t04);
+		
+		User usr12 = new User(0L, 0L, "David", "Malcom", null);
+		usr12.addTasks(t05);
+		
+		User usr13 = new User(0L, 0L, "Ryan", "Wells", null);
+		usr13.addTasks(t07);
+		
+		User usr14 = new User(0L, 0L, "Nick", "Flemington", null);
+		usr14.addTasks(t08);
+		
+		User usr15 = new User(0L, 0L, "Rick", "Nelson", null);
 
 		List<User> usrDs1 = new ArrayList<User>();
 		usrDs1.add(usr10);
@@ -298,6 +311,7 @@ public class TestUtils {
 		usrDs1.add(usr12);
 		usrDs1.add(usr13);
 		usrDs1.add(usr14);
+		usrDs1.add(usr15);
 
 		prj1.setUser(usr10);
 		t04.setUser(usr11);

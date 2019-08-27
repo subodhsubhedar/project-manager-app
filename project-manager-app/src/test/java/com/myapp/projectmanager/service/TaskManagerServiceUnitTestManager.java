@@ -57,6 +57,12 @@ public class TaskManagerServiceUnitTestManager {
 	@Mock
 	private ParentTaskManagerRepository parentTaskRepositoryMock;
 
+	@Mock
+	private UserService userService;
+
+	@Mock
+	private ProjectManagerService pmService;
+
 	@Parameter(value = 0)
 	public static List<Task> taskDs;
 
@@ -231,6 +237,8 @@ public class TaskManagerServiceUnitTestManager {
 		ParentTask p99 = new ParentTask(0L, "Misc1", null);
 		Task t99 = new Task(0L, "Miscellanous1", LocalDate.now(), LocalDate.now().plusDays(200), 29, p99, prj, false);
 
+		when(pmService.getProjectById(prj.getProjectId())).thenReturn(prj);
+
 		when(taskRepositoryMock.save(t99)).thenReturn(t99);
 		assertTrue("Miscellanous1".equals(service.createTask(t99).getTask()));
 	}
@@ -247,7 +255,9 @@ public class TaskManagerServiceUnitTestManager {
 
 	@Test
 	public void testUpdateTask_shouldRetUpdatedTask() throws ProjectManagerServiceException {
+		when(pmService.getProjectById(prj.getProjectId())).thenReturn(prj);
 
+		when(userService.getUserById(0L)).thenReturn(usrDs.get(4));
 		when(taskRepositoryMock.findById(taskDs.get(4).getTaskId())).thenReturn(Optional.of(taskDs.get(4)));
 
 		Task tUpdated = taskDs.get(4);
@@ -273,12 +283,13 @@ public class TaskManagerServiceUnitTestManager {
 	public void testCreateTaskWithoutParentTask_shouldPass() throws ProjectManagerServiceException {
 
 		Task t99 = new Task(0L, "Miscellanous1", LocalDate.now(), LocalDate.now().plusDays(200), 29, null, prj, false);
+		when(pmService.getProjectById(prj.getProjectId())).thenReturn(prj);
 
 		when(taskRepositoryMock.save(t99)).thenReturn(t99);
 
 		assertNull((service.createTask(t99).getParentTask()));
 	}
- 
+
 	@Test
 	public void testDeleteTask_shouldDelete() throws ProjectManagerServiceException {
 
@@ -292,7 +303,8 @@ public class TaskManagerServiceUnitTestManager {
 	@Test(expected = ProjectManagerServiceException.class)
 	public void testDeleteTask_shouldThrowException() throws ProjectManagerServiceException {
 
-		when(taskRepositoryMock.findById(taskDs.get(10).getTaskId())).thenThrow(new RuntimeException("testDeleteTask_shouldThrowException"));
+		when(taskRepositoryMock.findById(taskDs.get(10).getTaskId()))
+				.thenThrow(new RuntimeException("testDeleteTask_shouldThrowException"));
 		service.deleteTaskById((taskDs.get(10).getTaskId()));
 	}
 

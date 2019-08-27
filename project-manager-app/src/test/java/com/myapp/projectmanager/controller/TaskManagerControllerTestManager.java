@@ -100,7 +100,7 @@ public class TaskManagerControllerTestManager {
 		assertNotNull(restTemplate);
 	}
 
-	/**
+	/** 
 	 * 
 	 * @return
 	 */
@@ -188,6 +188,8 @@ public class TaskManagerControllerTestManager {
 		Task t01 = new Task(0L, "Use case -	New use case", LocalDate.now(), LocalDate.now().plusDays(15), 20, p, prj,
 				false);
 
+		t01.setUser(usrDs.get(0));
+		
 		when(taskMngrService.createTask(any(Task.class))).thenReturn(t01);
 
 		String expected = mapToJson(getMappedDto(t01));
@@ -210,7 +212,7 @@ public class TaskManagerControllerTestManager {
 		assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
 
 	}
-
+ 
 	@Test
 	public void testPutTask_shouldUpdateTask()
 			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
@@ -219,7 +221,8 @@ public class TaskManagerControllerTestManager {
 
 		Task t = new Task(0L, "Use case -	Updated use case", LocalDate.now(), LocalDate.now().plusDays(15), 20, p,
 				prj, false);
-
+		t.setUser(usrDs.get(0));
+		
 		when(taskMngrService.updateTask(any(Task.class))).thenReturn(t);
 
 		HttpHeaders headers = new HttpHeaders();

@@ -53,6 +53,9 @@ public class ProjectManagerServiceUnitTestManager {
 	@Mock
 	private ProjectManagerRepository pmRepositoryMock;
 
+	@Mock
+	private UserService userService;
+
 	@Parameter(value = 0)
 	public static List<Task> taskDs;
 
@@ -176,8 +179,12 @@ public class ProjectManagerServiceUnitTestManager {
 
 		Project prj1 = new Project(0L, "Project - New Mobile Subscription management system", LocalDate.now(),
 				LocalDate.now().plusYears(1), 45);
+		prj1.setUser(usrDs.get(0)); 
+		
+		when(userService.getUserById(prj.getUser().getUserId())).thenReturn(usrDs.get(0));
 
 		when(pmRepositoryMock.save(prj1)).thenReturn(prj1);
+		
 		assertTrue(
 				"Project - New Mobile Subscription management system".equals(service.createProject(prj1).getProject()));
 	}
@@ -187,7 +194,10 @@ public class ProjectManagerServiceUnitTestManager {
 
 		Project prj2 = new Project(0L, "Project - New Mobile Subscription management system", LocalDate.now(),
 				LocalDate.now().plusYears(1), 45);
-
+		prj2.setUser(usrDs.get(0));
+		
+		when(userService.getUserById(0L)).thenReturn(usrDs.get(0));
+		
 		when(pmRepositoryMock.save(prj2)).thenThrow(new RuntimeException("testCreateProject_shouldThrowException"));
 		service.createProject(prj2).getProject();
 	}
@@ -195,13 +205,15 @@ public class ProjectManagerServiceUnitTestManager {
 	@Test
 	public void testUpdateProject_shouldRetUpdatedProject() throws ProjectManagerServiceException {
 
-		when(pmRepositoryMock.findById(prj.getProjectId())).thenReturn(Optional.of(prj));
-
 		Project pUpdated = prj;
 		prj.setPriority(1);
-		User usr = new User(0L, 0L, "Jack", "Stokes", prj, null);
+		User usr = new User(0L, 0L, "Jack", "Stokes", prj);
 
 		prj.setUser(usr);
+
+		when(userService.getUserById(prj.getUser().getUserId())).thenReturn(usr);
+
+		when(pmRepositoryMock.findById(prj.getProjectId())).thenReturn(Optional.of(prj));
 
 		when(pmRepositoryMock.save(prj)).thenReturn((pUpdated));
 
@@ -221,6 +233,8 @@ public class ProjectManagerServiceUnitTestManager {
 	@Test
 	public void testDeleteProject_shouldDelete() throws ProjectManagerServiceException {
 
+		when(userService.getUserById(prj.getUser().getUserId())).thenReturn(usrDs.get(0));
+		
 		when(pmRepositoryMock.findById(prj.getProjectId())).thenReturn(Optional.of(prj));
 
 		service.deleteProjectById((prj.getProjectId()));

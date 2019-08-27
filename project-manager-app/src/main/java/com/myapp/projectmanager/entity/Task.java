@@ -9,8 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "task")
@@ -59,9 +58,9 @@ public class Task implements Serializable {
 	@JoinColumn
 	private ParentTask prntTask;
 
-	@Nullable
+	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="Project_ID")
+	@JoinColumn(name = "Project_ID")
 	private Project project;
 
 	@Nullable
@@ -69,7 +68,8 @@ public class Task implements Serializable {
 	private Boolean taskComplete;
 
 	@Nullable
-	@OneToOne(mappedBy = "task")
+	@ManyToOne
+	@JoinColumn(name="User_ID")
 	private User user;
 
 	public Task() {

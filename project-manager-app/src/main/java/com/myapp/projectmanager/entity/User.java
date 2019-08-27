@@ -1,17 +1,22 @@
 package com.myapp.projectmanager.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,23 +55,22 @@ public class User implements Serializable {
 
 	@JsonIgnore
 	@Nullable
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "Task_ID")
-	private Task task;
+	@Fetch(FetchMode.JOIN)
+	@OneToMany (mappedBy="user")   
+	private Set<Task> tasks;
 
 	public User() {
 
 	}
 
 	public User(long userId, long empId, @NotEmpty(message = "{user.firstName.invalid}") String firstName,
-			@NotEmpty(message = "{user.lastName.invalid}") String lastName, Project project, Task task) {
+			@NotEmpty(message = "{user.lastName.invalid}") String lastName, Project project) {
 		super();
 		this.userId = userId;
 		this.empId = empId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.project = project;
-		this.task = task;
 	}
 
 	public long getUserId() {
@@ -109,12 +113,20 @@ public class User implements Serializable {
 		this.project = project;
 	}
 
-	public Task getTask() {
-		return task;
+	public Set<Task> getTasks() {
+		return tasks;
 	}
 
-	public void setTask(Task task) {
-		this.task = task;
+	public void setTasks(Set<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public void addTasks(Task task) {
+		if (this.tasks == null) {
+			this.tasks = new HashSet<Task>();
+		}
+		this.tasks.add(task);
+
 	}
 
 }

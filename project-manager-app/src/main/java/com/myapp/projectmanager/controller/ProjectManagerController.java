@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myapp.projectmanager.dto.ProjectDTO;
+import com.myapp.projectmanager.dto.ProjectDTO.UpdateProjectValidateGroup;
 import com.myapp.projectmanager.entity.Project;
 import com.myapp.projectmanager.exception.ProjectManagerServiceException;
 import com.myapp.projectmanager.mapper.ProjectManagerEntityToDtoMapper;
@@ -61,7 +63,7 @@ public class ProjectManagerController {
 	}
 
 	@PutMapping(value = "/project/update")
-	public ProjectDTO updateProject(@Valid @RequestBody ProjectDTO projectDto) throws ProjectManagerServiceException {
+	public ProjectDTO updateProject(@Validated({ UpdateProjectValidateGroup.class }) @RequestBody ProjectDTO projectDto) throws ProjectManagerServiceException {
 		logger.debug("PUT updateProject() request received {}", projectDto);
 
 		Project persistentProject = getMappedEntity(projectDto);

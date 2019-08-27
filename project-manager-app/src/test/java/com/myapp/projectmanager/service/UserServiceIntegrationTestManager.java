@@ -67,7 +67,7 @@ public class UserServiceIntegrationTestManager {
 	}
 
 	@Test
-	public void runSmokeTest() {
+	public void runSmokeTest() { 
 
 		assertNotNull(userRepository);
 		assertNotNull(service);
@@ -86,18 +86,20 @@ public class UserServiceIntegrationTestManager {
 
 		service.findAllUsers().size();
 	}
-
+ 
 	@Test
 	public void testCreateUser() throws ProjectManagerServiceException {
-		User usr = new User(0L, 0L, "Jack", "Stokes", prj, null);
+		User usr = new User(0L, 0L, "Jack", "Stokes", prj);
 
+		usr.addTasks(taskDs.get(0));
+		
 		when(userRepository.save(usr)).thenReturn(usr);
 		assertTrue("Jack".equals(service.createUser(usr).getFirstName()));
 	}
 
 	@Test(expected = ProjectManagerServiceException.class)
 	public void testCreateUser_shouldThrowEx() throws ProjectManagerServiceException {
-		User usr = new User(0L, 0L, "Jack", "Stokes", prj, null);
+		User usr = new User(0L, 0L, "Jack", "Stokes", prj);
 
 		when(userRepository.save(usr)).thenThrow(new RuntimeException("testCreateUser_shouldThrowEx"));
 		service.createUser(usr);
@@ -105,24 +107,30 @@ public class UserServiceIntegrationTestManager {
 
 	@Test
 	public void testUpdateUser() throws ProjectManagerServiceException {
+		User usrOriginal = usrDs.get(1);
+		usrOriginal.addTasks(taskDs.get(2));
+		usrOriginal.setProject(prj);
 
-		when(userRepository.findById(usrDs.get(1).getUserId())).thenReturn(Optional.of(usrDs.get(1)));
+		when(userRepository.findById(usrDs.get(1).getUserId())).thenReturn(Optional.of(usrOriginal));
 
 		User usrUpdated = usrDs.get(1);
 		usrUpdated.setFirstName("Updated firstname");
 		usrUpdated.setLastName("Updated lastname");
+		usrUpdated.addTasks(taskDs.get(0));
 
-		usrUpdated.setProject(prj);
+		when(userRepository.save(usrUpdated)).thenReturn((usrUpdated));
 
-		when(userRepository.save(usrDs.get(1))).thenReturn((usrUpdated));
-
-		assertTrue("Updated firstname".equals(service.updateUser(usrDs.get(1)).getFirstName()));
-		assertTrue("Updated lastname".equals(service.updateUser(usrDs.get(1)).getLastName()));
+		assertTrue("Updated firstname".equals(service.updateUser(usrUpdated).getFirstName()));
+		assertTrue("Updated lastname".equals(service.updateUser(usrUpdated).getLastName()));
 	}
 
 	@Test(expected = ProjectManagerServiceException.class)
 	public void testUpdateUser_throwEx() throws ProjectManagerServiceException {
 
+		usrDs.get(1).setProject(prj);
+		usrDs.get(1).addTasks(taskDs.get(0));;
+
+		
 		when(userRepository.findById(usrDs.get(1).getUserId())).thenReturn(Optional.of(usrDs.get(1)));
 
 		User usrUpdated = usrDs.get(1);

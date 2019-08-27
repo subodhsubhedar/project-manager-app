@@ -69,7 +69,7 @@ public class TaskManagerController {
 		logger.debug("POST addNewTask() mapped entity {}", persistentTask);
 
 		return getMappedDto(taskMngrService.createTask(persistentTask));
-	}
+	} 
 
 	@PutMapping(value = "/task/update")
 	public TaskDTO updateTask(@Validated({ UpdateTaskValidateGroup.class }) @RequestBody TaskDTO taskDto)

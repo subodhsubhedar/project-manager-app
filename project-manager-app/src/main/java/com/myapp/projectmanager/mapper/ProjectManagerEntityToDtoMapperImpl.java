@@ -25,13 +25,24 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 
 	@Override
 	public Task getMappedTaskEntity(TaskDTO taskDto) {
-
+ 
 		Task target = new Task();
 		BeanUtils.copyProperties(taskDto, target);
 
 		if (taskDto.getParentTask() != null) {
 			ParentTask trgt = getMappedParentTaskEntity(taskDto.getParentTask());
 			target.setParentTask(trgt);
+		}
+		if (taskDto.getUser() != null) {
+
+			User usrTrgt = getMappedUserEntity(taskDto.getUser());
+			target.setUser(usrTrgt);
+		}
+ 
+		if (taskDto.getProjectName() != null) {
+			ProjectDTO projDto = new ProjectDTO(taskDto.getProjectId(), taskDto.getProjectName(), null, null, 0);
+			Project projTrgt = getMappedProjectEntity(projDto);
+			target.setProject(projTrgt);
 		}
 
 		return target;
@@ -53,6 +64,11 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 			target.setUser(trgt);
 		}
 
+		if (taskEntity.getProject() != null) {
+			target.setProjectId(taskEntity.getProject().getProjectId());
+			target.setProjectName(taskEntity.getProject().getProject());
+		}
+
 		return target;
 	}
 
@@ -72,6 +88,11 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 			if (source.getUser() != null) {
 				UserDTO trgt = getMappedUserDto(source.getUser());
 				target.setUser(trgt);
+			}
+
+			if (source.getProject() != null) {
+				target.setProjectId(source.getProject().getProjectId());
+				target.setProjectName(source.getProject().getProject());
 			}
 
 			taskDtoSetTarget.add(target);
@@ -98,7 +119,13 @@ public class ProjectManagerEntityToDtoMapperImpl implements ProjectManagerEntity
 				User trgt = getMappedUserEntity(source.getUser());
 				target.setUser(trgt);
 			}
-			
+
+			if (source.getProjectName() != null) {
+				ProjectDTO projDto = new ProjectDTO(source.getProjectId(), source.getProjectName(), null, null, 0);
+				Project projTrgt = getMappedProjectEntity(projDto);
+				target.setProject(projTrgt);
+			}
+
 			taskEntitySetTarget.add(target);
 		}
 

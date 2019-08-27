@@ -209,7 +209,7 @@ public class UserManagerControllerTestManager {
 	public void testPostUser_shouldCreateNewUser()
 			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
 
-		User usr = new User(0L, 0L, "James", "Bond", prj, null);
+		User usr = new User(0L, 0L, "James", "Bond", prj);
 
 		when(userService.createUser(any(User.class))).thenReturn(usr);
 
@@ -241,7 +241,8 @@ public class UserManagerControllerTestManager {
 		Task t = new Task(0L, "Use case - Receive Loan Closure Application", LocalDate.now(),
 				LocalDate.now().plusDays(150), 25, null, prj, false);
 
-		User usr = new User(0L, 0L, "James", "Bond", prj, t);
+		User usr = new User(0L, 0L, "James", "Bond", prj);
+		usr.addTasks(t);
 		usr.setLastName("Cameroon");
 
 		

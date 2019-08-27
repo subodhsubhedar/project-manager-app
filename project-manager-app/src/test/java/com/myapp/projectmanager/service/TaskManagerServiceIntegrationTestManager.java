@@ -51,7 +51,13 @@ public class TaskManagerServiceIntegrationTestManager {
 
 	@Autowired
 	private TaskManagerService service;
- 
+
+	@MockBean
+	private UserService userService;
+
+	@MockBean
+	private ProjectManagerService pmService;
+
 	@Parameter(value = 0)
 	public static List<Task> taskDs;
 
@@ -81,7 +87,6 @@ public class TaskManagerServiceIntegrationTestManager {
 
 		assertNotNull(service);
 	}
-
 
 	@Test
 	public void testFindAllParentTasks_shouldReturnCorrectCount() throws ProjectManagerServiceException {
@@ -225,10 +230,12 @@ public class TaskManagerServiceIntegrationTestManager {
 		ParentTask p99 = new ParentTask(0L, "Misc1", null);
 		Task t99 = new Task(0L, "Miscellanous1", LocalDate.now(), LocalDate.now().plusDays(200), 29, p99, prj, false);
 
+		when(pmService.getProjectById(prj.getProjectId())).thenReturn(prj);
+		
 		when(taskManagerRepository.save(t99)).thenReturn(t99);
 		assertTrue("Miscellanous1".equals(service.createTask(t99).getTask()));
 	}
-
+ 
 	@Test(expected = ProjectManagerServiceException.class)
 	public void testCreateTask_shouldThrowException() throws ProjectManagerServiceException {
 
@@ -242,7 +249,9 @@ public class TaskManagerServiceIntegrationTestManager {
 	@Test
 	public void testUpdateTask_shouldRetUpdatedTask() throws ProjectManagerServiceException {
 
+		when(userService.getUserById(0L)).thenReturn(usrDs.get(4));
 		when(taskManagerRepository.findById(taskDs.get(4).getTaskId())).thenReturn(Optional.of(taskDs.get(4)));
+		when(pmService.getProjectById(prj.getProjectId())).thenReturn(prj);
 
 		Task tUpdated = taskDs.get(4);
 		tUpdated.setTask("Updated");
@@ -267,12 +276,13 @@ public class TaskManagerServiceIntegrationTestManager {
 	public void testCreateTaskWithoutParentTask_shouldPass() throws ProjectManagerServiceException {
 
 		Task t99 = new Task(0L, "Miscellanous1", LocalDate.now(), LocalDate.now().plusDays(200), 29, null, prj, false);
+		when(pmService.getProjectById(prj.getProjectId())).thenReturn(prj);
 
 		when(taskManagerRepository.save(t99)).thenReturn(t99);
 
 		assertNull((service.createTask(t99).getParentTask()));
 	}
- 
+
 	@Test
 	public void testDeleteTask_shouldDelete() throws ProjectManagerServiceException {
 
@@ -286,7 +296,8 @@ public class TaskManagerServiceIntegrationTestManager {
 	@Test(expected = ProjectManagerServiceException.class)
 	public void testDeleteTask_shouldThrowException() throws ProjectManagerServiceException {
 
-		when(taskManagerRepository.findById(taskDs.get(10).getTaskId())).thenThrow(new RuntimeException("testDeleteTask_shouldThrowException"));
+		when(taskManagerRepository.findById(taskDs.get(10).getTaskId()))
+				.thenThrow(new RuntimeException("testDeleteTask_shouldThrowException"));
 		service.deleteTaskById((taskDs.get(10).getTaskId()));
 	}
 
@@ -296,7 +307,5 @@ public class TaskManagerServiceIntegrationTestManager {
 		when(taskManagerRepository.findById(12347858L)).thenReturn(Optional.empty());
 		service.deleteTaskById(12347858L);
 	}
-
-
 
 }

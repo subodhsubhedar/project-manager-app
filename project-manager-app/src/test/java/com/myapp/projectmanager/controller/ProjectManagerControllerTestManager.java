@@ -112,6 +112,7 @@ public class ProjectManagerControllerTestManager {
 			throws ProjectManagerServiceException, JsonProcessingException, JSONException {
 
 		Set<Project> prjSet = new HashSet<>();
+		prjSet.add(prj);
 
 		when(projectMngrService.findAllProjects()).thenReturn(prjSet);
 
@@ -121,7 +122,7 @@ public class ProjectManagerControllerTestManager {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		JSONAssert.assertEquals(expected, response.getBody(), false);
-		verify(projectMngrService, times(1)).findAllProjects();
+		verify(projectMngrService, times(1)).findAllProjects(); 
 	}
 
 	@Test
@@ -174,6 +175,9 @@ public class ProjectManagerControllerTestManager {
 		Project prj1 = new Project(0L, "Project - Hospital management system", LocalDate.now(),
 				LocalDate.now().plusYears(1), 27);
 
+		prj1.setTasks(new HashSet<>(taskDs));
+		prj1.setUser(usrDs.get(0));
+		
 		when(projectMngrService.createProject(any(Project.class))).thenReturn(prj1);
 
 		String expected = mapToJson(getMappedDto(prj1));
@@ -205,9 +209,9 @@ public class ProjectManagerControllerTestManager {
 				LocalDate.now().plusYears(1), 27);
 		prj1.setProject("Updated Project - Hospital management system");
 
-		User usr = new User(0L, 0L, "James", "Bond", prj1, null);
+		User usr = new User(0L, 0L, "James", "Bond", prj1);
 		prj1.setUser(usr);
-
+ 
 		when(projectMngrService.updateProject(any(Project.class))).thenReturn(prj1);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -278,7 +282,7 @@ public class ProjectManagerControllerTestManager {
 			throws ProjectManagerServiceException, JsonProcessingException {
 		Project prj1 = new Project(0L, null, null,
 				null,-1);
-
+	
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(mapToJson(getMappedDto(prj1)), headers);

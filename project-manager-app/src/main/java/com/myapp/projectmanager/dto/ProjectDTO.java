@@ -15,26 +15,32 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ProjectDTO {
 
+	public interface AddProjectValidateGroup {
+	}
+
+	public interface UpdateProjectValidateGroup {
+	}
+	
 	private long projectId;
 
-	@NotEmpty(message = "{project.project.invalid}")
+	@NotEmpty(message = "{project.project.invalid}", groups = { AddProjectValidateGroup.class, UpdateProjectValidateGroup.class })
 	private String project;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@Nullable
-	@FutureOrPresent(message = "{project.startDate.past}")
+	@FutureOrPresent(message = "{project.startDate.past}", groups = { AddProjectValidateGroup.class })
+	@NotNull(message = "{project.startDate.invalid}", groups = { UpdateProjectValidateGroup.class })
 	private LocalDate startDate;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@Nullable
-	@FutureOrPresent(message = "{project.endDate.past}")
+	@NotNull(message = "{project.endDate.invalid}", groups = { UpdateProjectValidateGroup.class })	
+	@FutureOrPresent(message = "{project.endDate.past}", groups = { AddProjectValidateGroup.class })
 	private LocalDate endDate;
 
-	@NotNull(message = "{project.priority.invalid}")
-	@Min(message = "{project.priority.negativeOrZero}", value = 1)
+	@NotNull(message = "{project.priority.invalid}", groups = { UpdateProjectValidateGroup.class })
+	@Min(message = "{project.priority.negativeOrZero}", value = 1, groups = {AddProjectValidateGroup.class , UpdateProjectValidateGroup.class })
 	private int priority;
 
-	@JsonIgnore
+	@Nullable
 	private Set<TaskDTO> tasks;
 
 	@Nullable

@@ -42,6 +42,11 @@ public class TaskDTO {
 
 	private UserDTO user;
 
+	@NotNull
+	private long projectId;
+
+	private String projectName;
+
 	@Nullable
 	private Boolean taskComplete;
 
@@ -49,15 +54,17 @@ public class TaskDTO {
 		this.startDate = LocalDate.now();
 		this.endDate = LocalDate.now();
 		this.priority = 1;
+		this.projectId =0L;
 	}
 
-	public TaskDTO(String task, LocalDate startDate, LocalDate endDate, int priority, ParentTaskDTO parentTask) {
+	public TaskDTO(String task, LocalDate startDate, LocalDate endDate, int priority, ParentTaskDTO parentTask, long projectId) {
 		super();
 		this.task = task;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.priority = priority;
 		this.prntTask = parentTask;
+		this.projectId = projectId; 
 	}
 
 	public long getTaskId() {
@@ -124,10 +131,26 @@ public class TaskDTO {
 		this.user = user;
 	}
 
+	public long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(long projectId) {
+		this.projectId = projectId;
+	}
+
 	@Override
 	public String toString() {
 		return "TaskDTO [taskId=" + taskId + ", task=" + task + ", startDate=" + startDate + ", endDate=" + endDate
 				+ ", priority=" + priority + ", taskComplete=" + taskComplete + "]";
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 }

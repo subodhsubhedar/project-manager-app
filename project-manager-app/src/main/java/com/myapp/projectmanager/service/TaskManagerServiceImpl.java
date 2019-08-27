@@ -11,13 +11,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.myapp.projectmanager.entity.ParentTask;
+import com.myapp.projectmanager.entity.Project;
 import com.myapp.projectmanager.entity.Task;
+import com.myapp.projectmanager.entity.User;
 import com.myapp.projectmanager.exception.ProjectManagerServiceException;
 import com.myapp.projectmanager.repository.ParentTaskManagerRepository;
 import com.myapp.projectmanager.repository.TaskManagerRepository;
 
 /**
- * ss 
+ * ss
  * 
  * @author Admin
  *
@@ -32,6 +34,12 @@ public class TaskManagerServiceImpl implements TaskManagerService {
 
 	@Autowired
 	private ParentTaskManagerRepository parentTaskRepository;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private ProjectManagerService pmService;
 
 	@Override
 	@Transactional
@@ -53,6 +61,11 @@ public class TaskManagerServiceImpl implements TaskManagerService {
 	public Task createTask(Task task) throws ProjectManagerServiceException {
 		logger.debug("Calling repository for createTask Task {}", task);
 		try {
+			
+			if (task.getProject() != null) {
+				Project prj = pmService.getProjectById(task.getProject().getProjectId());
+				task.setProject(prj);
+			}
 			return repository.save(task);
 
 		} catch (Exception e) {
@@ -74,19 +87,29 @@ public class TaskManagerServiceImpl implements TaskManagerService {
 			entity.setStartDate(task.getStartDate());
 			entity.setEndDate(task.getEndDate());
 			entity.setPriority(task.getPriority());
-			
-			ParentTask parentTask =null;
+
+			if (task.getUser() != null) {
+				User usr = userService.getUserById(task.getUser().getUserId());
+				entity.setUser(usr);
+			}
+
+			if (task.getProject() != null) {
+				Project prj = pmService.getProjectById(task.getProject().getProjectId());
+				entity.setProject(prj);
+			}
+
+			ParentTask parentTask = null;
 			if (task.getParentTask() != null) {
 				long parentTaskId = task.getParentTask().getParentId();
 
 				if (parentTaskId != 0) {
-					//check if parent task is registered as a parent in parent task table.
+					// check if parent task is registered as a parent in parent task table.
 					parentTask = getParentTaskById(parentTaskId);
-					
-					if(parentTask==null) {
-						parentTask =  task.getParentTask();
-						
-						//Add the Parent task entry in Parent task table
+
+					if (parentTask == null) {
+						parentTask = task.getParentTask();
+
+						// Add the Parent task entry in Parent task table
 						parentTask = parentTaskRepository.saveAndFlush(parentTask);
 					}
 				}
@@ -194,7 +217,7 @@ public class TaskManagerServiceImpl implements TaskManagerService {
 			throw new ProjectManagerServiceException(
 					("Exception occured while retrieving Parent Task with id :" + taskId + " -- " + e.getMessage()), e);
 		}
-	} 
+	}
 
 	@Override
 	@Transactional

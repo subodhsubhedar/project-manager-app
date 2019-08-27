@@ -19,7 +19,7 @@ public class UserDTO {
 	}
 
 	public UserDTO(long userId, long empId, @NotEmpty(message = "{user.firstName.invalid}") String firstName,
-			@NotEmpty(message = "{user.lastName.invalid}") String lastName, ProjectDTO project, TaskDTO task) {
+			@NotEmpty(message = "{user.lastName.invalid}") String lastName) {
 		super();
 		this.userId = userId;
 		this.empId = empId;

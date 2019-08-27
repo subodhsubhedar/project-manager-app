@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
 			entity.setFirstName(user.getFirstName());
 			entity.setLastName(user.getLastName());
 
-			if (user.getTask() != null) {
-				entity.setTask(user.getTask());
+			if (user.getTasks() != null) {
+				entity.setTasks(user.getTasks());
 			}
 
 			if (user.getProject() != null) {

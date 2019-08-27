@@ -148,21 +148,20 @@ public class UserManagerDaoIntegrationTestManager {
 	@Test
 	public void testCreateUser_shouldCreateNewUser() {
 
-		User usr = new User(0L, 0L, "NewUser", "Roy", prj, taskDs.get(0));
+		User usr = new User(0L, 0L, "NewUser", "Roy", prj);
 		User usrEntity = userRepository.save(usr);
 
 		assertTrue("NewUser".equals(usrEntity.getFirstName()));
 		assertTrue(prj.getProject().equals(usrEntity.getProject().getProject()));
-		assertTrue(taskDs.get(0).getTask().equals(usrEntity.getTask().getTask()));
 	}
 
 	@Test
 	public void testDeleteUser_shouldDelete() {
 
-		User u = userRepository.findByFirstName(usrDs.get(3).getFirstName()).get();
+		User u = userRepository.findByFirstName(usrDs.get(5).getFirstName()).get();
 		userRepository.delete(u);
 
-		assertFalse(userRepository.findByFirstName(usrDs.get(3).getFirstName()).isPresent());
+		assertFalse(userRepository.findByFirstName(usrDs.get(5).getFirstName()).isPresent());
 	}
 
 	@Test
